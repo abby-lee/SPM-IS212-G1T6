@@ -3,8 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root' + \
-                                        '@localhost:8889/lms_database'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/lms_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
                                            'pool_recycle': 280}
@@ -144,13 +143,13 @@ db.create_all()
 def prerequisites_by_course(course_code):
     course = Courses.query.filter_by(course_code=course_code).all()
     if course:
-        prerequisites = request.values.get('prerequisites')
+        # prerequisites_list = request.args.get('prerequisites')
         return jsonify(
             {
                 "code": 200,
                 "data": {
                     "course_code": course_code,
-                    "prerequisites": prerequisites
+                    # "prerequisites": prerequisites
                 }
             }
         )
