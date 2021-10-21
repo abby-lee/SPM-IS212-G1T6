@@ -400,10 +400,6 @@ fieldset {
   border: 0;
 }
 
-.left-links{
-  flex:1 1 200px;
-}
-
 legend {
   float: left;
   width: 100%;
