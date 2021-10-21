@@ -141,15 +141,17 @@ db.create_all()
 #get prerequisites
 @app.route("/courses/<int:course_code>/prerequisites")
 def prerequisites_by_course(course_code):
-    course = Courses.query.filter_by(course_code=course_code).all()
+    course = Courses.query.filter_by(course_code=course_code).first()
     if course:
-        # prerequisites_list = request.args.get('prerequisites')
+        prerequisites_list = request.args.get('prerequisites', course.prerequisites)        
+        if prerequisites_list == None:
+            prerequisites_list = 'Cannot retrieve prerequisites'
         return jsonify(
             {
                 "code": 200,
                 "data": {
                     "course_code": course_code,
-                    # "prerequisites": prerequisites
+                    "prerequisites": prerequisites_list
                 }
             }
         )
@@ -168,7 +170,9 @@ def prerequisites_by_course(course_code):
 def completed_courses(learners_eid):
     learner = Learners.query.filter_by(learners_eid=learners_eid).all()
     if learner:
-        courses_completed = request.values.get('courses_completed', default=None, type=str)
+        courses_completed = request.values.get('courses_completed', learner.courses_completed)      
+        if courses_completed == None:
+            courses_completed = 'Cannot retrieve courses_completed'
         return jsonify(
             {
                 "code": 200,
