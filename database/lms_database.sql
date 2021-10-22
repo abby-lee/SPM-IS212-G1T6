@@ -225,6 +225,13 @@ CREATE TABLE IF NOT EXISTS `quizzes` (
   CONSTRAINT `quizzes_ibfk_2` FOREIGN KEY (`class_section`) REFERENCES `sections` (`class_section`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+
+INSERT INTO `quizzes` (`quizid`, `course_code`, `class_section`, `time`, `graded`) VALUES
+(1, 1008, 'G1', 1030, 'A'),
+(2, 1008, 'G1', 1300, 'C'),
+(3, 1008, 'G1', 1845, '');
+
+
 -- --------------------------------------------------------
 
 --
