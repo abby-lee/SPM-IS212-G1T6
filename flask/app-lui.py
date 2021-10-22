@@ -200,7 +200,7 @@ class Quizanswers(db.Model):
 
 db.create_all()
 
-# 1a. Get all quizzes by section and course code
+# 1 Get all quizzes by section and course code
 @app.route("/<int:course_code>/<string:class_section>/quizzes")
 def getquizzes(course_code, class_section):
     quizzes = Quizzes.query.filter_by(course_code=course_code, class_section=class_section).all()
@@ -213,19 +213,24 @@ def getquizzes(course_code, class_section):
         "data": {
             "course_code": course_code,
             "class_section": class_section,
-            # "message": "No quizzes created yet."
         },
         "message": "No quizzes created yet."
     })
-# 1b. Get specific quiz by section and course code
-@app.route("/<int:course_code>/<string:class_section>/<int:quizid>")
+
+# 2. Display quiz questions as a form
+@app.route("/<int:course_code>/<string:class_section>/<int:quizid>/quizquestions", methods=['GET','POST'])
 def getquiz(course_code, class_section, quizid):
     quiz = Quizzes.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).first()
     if quiz:
-        return jsonify({
-            "code": 200,
-            "data": [quiz.to_dict()]
-        }), 200
+        form = AddForm();
+        if form.validate_on_submit():
+            quistions = form.name.data
+            questions = Quizquestions(questiontext)
+            db.session.add(questions)
+            db.session.commit()
+        puppies = Quizquestions.query.all()
+        return render_template('testing.html',form=form, puppies=puppies)
+
     return jsonify({
         "code": 404,
         "data": {
@@ -235,10 +240,6 @@ def getquiz(course_code, class_section, quizid):
         },
         "message": "Quiz does not exist."
     }), 404
-
-# 2. Display quiz questions as a form
-@app.route("/courses/searchTitle/quizquestions")
-def find_by_course_title(course_title):
 
 # 3. Set timer
 # 4. Automatically mark on submit/on timer run out with the quizanswers table

@@ -227,8 +227,8 @@ CREATE TABLE IF NOT EXISTS `quizzes` (
 
 
 INSERT INTO `quizzes` (`quizid`, `course_code`, `class_section`, `time`, `graded`) VALUES
-(1, 1008, 'G1', 1030, 'A'),
-(2, 1008, 'G1', 1300, 'C'),
+(1, 1008, 'G1', 1030, 'T'),
+(2, 1008, 'G1', 1300, 'F'),
 (3, 1008, 'G1', 1845, '');
 
 
@@ -254,6 +254,11 @@ CREATE TABLE IF NOT EXISTS `quizquestions` (
   CONSTRAINT `quizquestions_ibfk_3` FOREIGN KEY (`quizid`) REFERENCES `quizzes` (`quizid`)
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+INSERT INTO `quizquestions` (`questionid`, `course_code`, `class_section`, `quizid`, `questiontext`, `questiontype`, `questionoptions`) VALUES
+(1, 1008, 'G1', 1, 'Does a triangle have 4 sides? (T/F)', ''),
+(2, 1008, 'G1', 2, 'What is 10 + 20?', 'MCQ'),
+(3, 1008, 'G1', 3, '');
 
 -- --------------------------------------------------------
 
