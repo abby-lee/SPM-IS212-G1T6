@@ -1,20 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-# from flask_notifications.filters.before_date import BeforeDate
-
-# notifications
-# from flask_notifications.filters.before_date import BeforeDate
-
-# event_hub.filter_by(Not(BeforeDate(now)))
-
-# event = Event(None, "system", "This event will not pass the filter",
-#               "This is the body of the test", sender="system")
-# notifications.send(event.to_json())
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root' + \
-                                        '@localhost:3306/lms_database'
+                                        '@localhost:8889/lms_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
                                            'pool_recycle': 280}
@@ -140,52 +130,92 @@ class Enrols(db.Model):
         for column in columns:
             result[column] = getattr(self, column)
         return result
-
+    
     def __init__(self, course_code, learners_eid, class_section):
         self.course_code = course_code
         self.learners_eid = learners_eid
         self.class_section = class_section
 
+
 db.create_all()
 
-
-#get all courses
-@app.route("/courses")
-def courses():
-    course_list = Courses.query.all()
+#get prerequisites
+@app.route("/courses/<int:course_code>/prerequisites")
+def prerequisites_by_course(course_code):
+    course = Courses.query.filter_by(course_code=course_code).first()
+    if course:
+        prerequisites_list = request.args.get('prerequisites', course.prerequisites)        
+        if prerequisites_list == None:
+            prerequisites_list = 'No prerequisites'
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "course_code": course_code,
+                    "prerequisites": prerequisites_list
+                }
+            }
+        )
     return jsonify(
         {
-            "data": [courses.to_dict()
-                     for courses in course_list]
+            "code": 404,
+            "data": {
+                "course_code": course_code
+            },
+            "message": "Course is not found."
         }
-    ), 200
+    )
 
-#get all sections -> check materials in sections 
-@app.route("/sections")
-def get_sections():
-    section_list = Sections.query.all()
+#get completed courses
+@app.route("/<int:learners_eid>/completed")
+def completed_courses(learners_eid):
+    learner = Learners.query.filter_by(learners_eid=learners_eid).all()
+    if learner:
+        courses_completed = request.values.get('courses_completed', default=None, type=str)
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "learner_eid": learners_eid,
+                    "courses_completed": courses_completed
+                }
+            }
+        )
     return jsonify(
         {
-            "data": [sections.to_dict()
-                     for sections in section_list]
+            "code": 404,
+            "data": {
+                "learner_eid": learners_eid
+            },
+            "message": "No eligible courses found."
         }
-    ), 200
+    )
 
-#get all trainers -> view, upload, delete materials
-@app.route("/trainers")
-def get_trainers():
-    search_name = request.args.get('trainers_name')
-    if search_name:
-        trainers_list = Trainers.query.filter(Trainers.trainers_name.contains(search_name))
-    else:
-        trainers_list = Trainers.query.all()
-    return jsonify(
-        {
-            "data": [trainer.to_dict() for trainer in trainers_list]
-        }
-    ), 200
+# #get eligible courses
+# @app.route("/<int:learners_eid>/courses")
+# def eligible_courses(learners_eid):
+#     if 
 
-#get learners by course  -> send notifications
+# #get eligible courses
+# @app.route("/courses/learners/<int:learners_eid>")
+# def eligible_courses(learners_eid):
+#     prerequisites = request.args.get('prerequisites')
+#     if prerequisites:
+#         eligible = Learners.query.filter(Learners.courses_completed.contains(prerequisites))
+#     # eligible_courses = Courses.query.filter_by(prerequisites=prerequisites)
+#         return jsonify(
+#             {
+#                 "data": [course.to_dict() for course in eligible]
+#             }
+#         ), 200
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "message": "not eligible"
+#         },
+#     ), 404
+    
+# get learners by course 
 @app.route("/courses/<int:course_code>")
 def learner_by_course(course_code):
     learners = Learners.query.filter_by(course_code=course_code).all()
@@ -203,30 +233,41 @@ def learner_by_course(course_code):
             "message": "No learners in this course."
         }), 404
 
-#update course materials
-@app.route("/courses/<int:course_code>", methods=['PUT'])
-def update_course(class_section, course_code):
-    courses = Courses.query.filter_by(course_code=course_code).first() 
-    if courses:
-        data = request.get_json()
-        courses.course_code = data['course_code']
-        db.session.commit()
-        return jsonify(
-            {
-                "code": 200,
-                "data": courses.to_dict()
-            }
-        )
+#get all courses
+@app.route("/courses")
+def courses():
+    course_list = Courses.query.all()
     return jsonify(
         {
-            "code": 404,
-            "data": {
-                "class_section": class_section,
-                "course_code": course_code
-            },
-            "message": "Course not found."
+            "data": [courses.to_dict()
+                     for courses in course_list]
         }
-    ), 404
+    ), 200
+
+#get all sections
+@app.route("/sections")
+def get_sections():
+    section_list = Sections.query.all()
+    return jsonify(
+        {
+            "data": [sections.to_dict()
+                     for sections in section_list]
+        }
+    ), 200
+
+#get all trainers
+@app.route("/trainers")
+def get_trainers():
+    search_name = request.args.get('trainers_name')
+    if search_name:
+        trainers_list = Trainers.query.filter(Trainers.trainers_name.contains(search_name))
+    else:
+        trainers_list = Trainers.query.all()
+    return jsonify(
+        {
+            "data": [trainer.to_dict() for trainer in trainers_list]
+        }
+    ), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
