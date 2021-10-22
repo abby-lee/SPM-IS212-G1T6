@@ -1,13 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_notifications.filters.before_date import BeforeDate
-
-event_hub.filter_by(Not(BeforeDate(now)))
-
-event = Event(None, "system", "This event will not pass the filter",
-              "This is the body of the test", sender="system")
-notifications.send(event.to_json())
+# from flask_notifications.filters.before_date import BeforeDate
 
 # notifications
 # from flask_notifications.filters.before_date import BeforeDate
