@@ -256,9 +256,9 @@ CREATE TABLE IF NOT EXISTS `quizquestions` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 INSERT INTO `quizquestions` (`questionid`, `course_code`, `class_section`, `quizid`, `questiontext`, `questiontype`, `questionoptions`) VALUES
-(1, 1008, 'G1', 1, 'Does a triangle have 4 sides? (T/F)', ''),
-(2, 1008, 'G1', 2, 'What is 10 + 20?', 'MCQ'),
-(3, 1008, 'G1', 3, '');
+(1, 1008, 'G1', 1, 'Does a triangle have 4 sides? (T/F)', 'T/F', 'True, False'),
+(2, 1008, 'G1', 1, 'What is 10 + 20?', 'MCQ', '35, 30, 40, 45'),
+(3, 1008, 'G1', 1, 'What is the square root of 25?', 'MCQ', '5, 625, 50, 1');
 
 -- --------------------------------------------------------
 
@@ -280,6 +280,12 @@ CREATE TABLE IF NOT EXISTS `quizanswers` (
   CONSTRAINT `quizanswers_ibfk_3` FOREIGN KEY (`quizid`) REFERENCES `quizzes` (`quizid`)
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `quizanswers` (`course_code`, `class_section`, `quizid`, `questionid`, `answertext`) VALUES
+(1008, 'G1', 1, 1, 'False'),
+(1008, 'G1', 2, 1, '30'),
+(1008, 'G1', 3, 1, '5');
 
 -- --------------------------------------------------------
 

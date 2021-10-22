@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/quiz_submit" method="POST">
+        <h3> {{ questionid }} </h3>
+        <ul>
+            {% for question in form.radio %}
+            <li id="{{ quizquestions.questionid }}">{{ quizquestions.questiontext }}</li>
+    
+                {% for option in quizquestions.questionoptions %}
+                <input type="radio" id="{{ option }}">{{ option }}<br>
+                {% endfor %}
+                <br>
+            {% endfor %}
+        </ul>
+        <input type="submit" value="Submit" name="Submit"/>
+    </form>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from sqlalchemy.exc import SQLAlchemyError
@@ -202,7 +202,7 @@ db.create_all()
 
 # 1 Get all quizzes by section and course code
 @app.route("/<int:course_code>/<string:class_section>/quizzes")
-def getquizzes(course_code, class_section):
+def getQuizzes(course_code, class_section):
     quizzes = Quizzes.query.filter_by(course_code=course_code, class_section=class_section).all()
     if quizzes:
         return jsonify({
@@ -218,34 +218,81 @@ def getquizzes(course_code, class_section):
     })
 
 # 2. Display quiz questions as a form
-@app.route("/<int:course_code>/<string:class_section>/<int:quizid>/quizquestions", methods=['GET','POST'])
-def getquiz(course_code, class_section, quizid):
-    quiz = Quizzes.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).first()
-    if quiz:
-        form = AddForm();
-        if form.validate_on_submit():
-            quistions = form.name.data
-            questions = Quizquestions(questiontext)
-            db.session.add(questions)
-            db.session.commit()
-        puppies = Quizquestions.query.all()
-        return render_template('testing.html',form=form, puppies=puppies)
+@app.route("/<int:course_code>/<string:class_section>/<int:quizid>")
+def getQuizQuestions(course_code, class_section, quizid):
+    quizquestions = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
+    # if request.method == 'POST':
+    for quizquestion in quizquestions:
+        question = quizquestion.questiontext
+        # singleoptions = []
+        options = quizquestion.questionoptions
+        # for option in options:
+            # singleoptions = singleoptions.append(option)
+            # singleoptions = option
+        return jsonify({
+            "code": 200,
+            "data": {
+                "questiontext": question,
+                "questionoptions": options
+            }
+        })
+        # return render_template('quiz_learner.html', title='Quiz Questions', question=question, singleoptions=singleoptions)
+    # if quizquestions:
+    #     return jsonify({
+    #         "code": 200,
+    #         "data": {
+    #             "data": [question.to_dict() for question in quizquestions]
+    #         }
+    #     })
 
     return jsonify({
         "code": 404,
         "data": {
             "course_code": course_code,
             "class_section": class_section,
-            # "message": "No quizzes created yet."
         },
         "message": "Quiz does not exist."
     }), 404
 
 # 3. Set timer
+
+
+
+# answers = []
 # 4. Automatically mark on submit/on timer run out with the quizanswers table
+# @app.route("/<int:course_code>/<string:class_section>/<int:quizid>", methods=['GET','POST'])
+# def checkquizanswers(course_code, class_section, quizid):
+#     quizquestions = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
+#     if quizquestions:
+        # return jsonify({
+        #     "data": [quizquestion.to_dict() for quizquestion in quizquestions]
+        # }), 200
+        # form = QuizQuestionsForm();
+        # if form.validate_on_submit():
+        #     quizquestion = form.quizquestion.data
+        #     questions = Quizquestions(quizquestion)
+        #     db.session.add(questions)
+        #     db.session.commit()
+        # quizquestions = Quizquestions.query.all()
+    #     print(request.form.get('question_answer'))
+    #     # return render_template('quiz_learner.html',form=form)
+    #     return render_template('quiz_learner.html')
+
+    # return jsonify({
+    #     "code": 404,
+    #     "data": {
+    #         "course_code": course_code,
+    #         "class_section": class_section,
+    #     },
+    #     "message": "Error with quiz submission."
+    # }), 404
 
 
+1. 
 
+2. 
+
+3. give grade
 
 
 
