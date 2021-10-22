@@ -358,7 +358,7 @@ def add_quiz():
 
 #step2 add questions
 @app.route("/quizzes/<int:quizid>", methods=['POST'])
-def add_questions(quizid):
+def add_questions():
     data = request.get_json()
     if not all(key in data.keys() for
                key in ('quizid', 'class_section', 'course_code',
@@ -379,7 +379,7 @@ def add_questions(quizid):
         }), 500
 # step 3 add answer
 @app.route("/quizzes/<int:quizid>/<int:questionid>", methods=['POST'])
-def add_answers(quizid, questionid):
+def add_answers(quizid):
     data = request.get_json()
     if not all(key in data.keys() for
                key in ('questionid', 'quizid', 'class_section', 'course_code',

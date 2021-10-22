@@ -200,6 +200,24 @@ class Quizanswers(db.Model):
 
 db.create_all()
 
+# 1. Get quiz for section and course code
+@app.route("/sections/<int:course_code>/<string:class_section>/quizzes")
+def getquiz(course_code, class_section):
+    quizzes = Quizzes.query.filter_by(course_code=course_code, class_section=class_section).all()
+    if quizzes:
+        return jsonify({
+            "data": [quiz.to_dict() for quiz in quizzes]
+        }), 200
+    else:
+        return jsonify({
+            "message": "No quizzes created yet."
+        }), 404
+
+
+
+# 2. Display quiz questions as a form
+# 3. Set timer
+# 4. Automatically mark on submit/on timer run out with the quizanswers table
 
 
 
