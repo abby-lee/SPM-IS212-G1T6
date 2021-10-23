@@ -288,11 +288,11 @@ def getQuizQuestions(course_code, class_section, quizid):
     # }), 404
 
 
-1. 
+# 1. check questions answers to selected 
 
-2. 
+# 2. 
 
-3. give grade
+# 3. give grade
 
 
 
