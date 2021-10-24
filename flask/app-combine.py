@@ -420,6 +420,17 @@ def add_answers(quizid, questionid):
             "message": "Unable to commit to database."
         }), 500
 
+#get all quizzes for that section and course
+@app.route("/quizzes/<string:class_section>/<int:course_code>")
+def get_quizzes(class_section, course_code):
+    quiz_list = Quizzes.query.filter_by(class_section=class_section, course_code=course_code).all()
+    return jsonify(
+        {
+            "data": [quiz.to_dict()
+                     for quiz in quiz_list]
+        }
+    ), 200
+
 #get all class materials related to the course
 @app.route("/materials/<string:class_section>/<int:course_code>")
 def get_class_material(class_section, course_code):

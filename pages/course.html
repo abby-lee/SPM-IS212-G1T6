@@ -38,6 +38,9 @@
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addQuizModal">
                 Add Quiz
             </button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" @click="pageRefresh()">
+              Update Table
+          </button>
           </div>
 
           <!-- Modal to Add Materials -->
@@ -133,37 +136,39 @@
                   <form> 
                     <table class="table table-striped">
                       <thead>
-                        <tr>
-                          <td class="form-group">
-                            <label for="courseTitle" class="cta-text">Course Title</label> <span class="text-danger"> *Required</span>
-                            <input required name="cname" v-model="newCourseTitle" type="text" class="form-control" id="courseTitle" placeholder="Enter Course Title">
-                          </td>
-                        </tr>
-    
-                        <tr>
+                        <!-- <tr>
                           <td class="form-group">
                             <label for="courseCode" class="cta-text">Course Code</label> <span class="text-danger"> *Required</span>
-                            <input required name="ccode" v-model="newCode" type="text" class="form-control" id="newCode" placeholder="Enter Course Code">
+                            <input required name="ccode" v-model="newcourseCode" type="text" class="form-control" id="newCode" placeholder="Enter Course Code">
                           </td>
                         </tr>
+
+                        <tr>
+                          <td class="form-group">
+                            <label for="classSection" class="cta-text">Course Section</label> <span class="text-danger"> *Required</span>
+                            <input required name="cname" v-model="newclassSection" type="text" class="form-control" id="classSection" placeholder="Enter Class Section">
+                          </td>
+                        </tr> -->
     
                         <tr>
                           <td class="form-group">
-                            <label for="description" class="cta-text">Description</label><span class="text-danger"> *Required</span>
-                            <input required name="description" v-model="newDescription" type="text" class="form-control" id="description"
+                            <label for="time" class="cta-text">Time (in minutes)</label><span class="text-danger"> *Required</span>
+                            <input required name="description" v-model="time" type="number" class="form-control" id="time"
                               placeholder="Enter description">
                           </td>
                         </tr>
     
                         <tr>
                           <td class="form-group">
-                            <label for="prerequisites" class="cta-text">Prerequisites</label>
-                            <input v-model="newPrerequisites" type="text" class="form-control" id="prerequisites" 
-                              placeholder="Prerequisites">
+                            <label for="graded" class="cta-text">Quiz Type: </label> <br>
+                            <!-- <input v-model="newgraded" type="radio" class="form-control" id="graded" > -->
+                            <input v-model="graded" type="radio" id="graded" name="graded" value="T">
+                            <label for="T"> Final quiz </label><br>
+                            <input v-model="graded" type="radio" id="graded" name="graded" value="F">
+                            <label for="F"> Progress Quiz </label><br>
                           </td>
                         </tr>
-  
-  
+                      
                       </thead>
                     </table>
                   
@@ -172,11 +177,11 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <!-- onclick = "return addCourse()" -->
-                    <button @click="addCourse()" class="btn btn-primary" v-on:submit.prevent="onSubmit" data-dismiss="modal" >Create Course</button>
+                    <button @click="addQuiz()" class="btn btn-primary" v-on:submit.prevent="onSubmit" data-dismiss="modal" >Create Quiz</button>
                   
     
                     <div class="row mt-4 justify-content-center">
-                      <div class="text-success" v-if="courseAdded">
+                      <div class="text-success" v-if="quizAdded">
                         {{ statusMessage }} <br>
                       </div>
                     </div>
@@ -230,6 +235,32 @@
       </div>
     </div>
     <!-- End Table -->
+    <!-- Quiz Table-->
+    <div class="container" style="display:center">
+      <div class="row">
+          <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Quiz Id</th>
+                    <th scope="col">Time (in minutes) </th>
+                    <th scope="col">Quiz Type</th>
+                    <th scope="col">View/Add questions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="quiz in quizzes">
+                    <td>{{ quiz.quizid }}</td>
+                    <td>{{ quiz.time }}</td>
+                    <td v-if="quiz.graded =='T'">Final Quiz</td>
+                    <td v-if="quiz.graded =='F'">Progress Quiz</td>
+                    <td> 
+                        <a class="btn btn-outline-primary" :href="#" role="button"> View/Add</a>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
 
     </section>
   </div>

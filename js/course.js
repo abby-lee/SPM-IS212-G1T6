@@ -1,7 +1,8 @@
 var get_all_URL = "http://localhost:5000/courses";
 var get_all_trainers = "http://localhost:5000/trainers";
 var get_all_learners = "http://localhost:5000/learners";
-var materials_url = "http://localhost:5000/materials"
+var materials_url = "http://localhost:5000/materials";
+var quizzes_url = "http://localhost:5000/quizzes"
 
 var app = new Vue({
     el: "#app",
@@ -25,7 +26,12 @@ var app = new Vue({
         materialName: "",
         materialID: 0,
         materialType: "",
-        materialLink: ""
+        materialLink: "",
+
+        "quizzes" :[],
+        quizid: 0,
+        time:0,
+        graded:"",
 
     },
     methods: {
@@ -251,16 +257,101 @@ var app = new Vue({
                     });
             }
         },
+        getQuizzes: function () { 
+            this.courseCode = 1003;
+            this.classSection = "G2"
+
+            const response =
+                fetch(`${quizzes_url}/${this.classSection}/${this.courseCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no course found in db
+                        this.searchError = data.message;
+                    } else {
+                        this.quizzes = data.data;
+                        console.log(this.quizzes);
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.searchError + error);
+                });
+        },
+        addQuiz: function () {
+            // reset data to original setting
+            // this.materialAdded = false;
+            // this.errorMsg = "";
+            // this.statusMessage = "";
+            // this.msg = "";
+            this.courseCode = 1003;
+            this.classSection = "G2"
+
+            console.log("hey")
+
+            let jsonData = JSON.stringify({
+                course_code: this.courseCode,
+                class_section: this.classSection,
+                time: this.time,
+                graded: this.graded,
+            });
+            console.log(jsonData)
+            if (this.time === 0 || this.graded === "") {
+                this.msg = "Please fill in required fields.";
+            }
+            fetch(`${quizzes_url}`, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: jsonData
+            })
+            .then(response => response.json())
+            .then(data => {
+                result = data.data;
+                console.log(result);
+                // 3 cases
+                switch (data.code) {
+                    case 200:
+                        this.quizAdded = true;
+                        this.statusMessage = data.message
+                        
+                        // refresh page
+                        this.time = 0;
+                        this.graded = "";
+                        this.pageRefresh()
+
+                        break;
+                
+                    case 500:
+                        this.errorMsg = data.message;
+                        break;
+                    default:
+                        throw `${data.code}: ${data.message}`;
+                }
+            })
+            .catch(error => {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                this.errorMsg = this.statusMessage
+                console.log(this.errorMsg);
+            });
+        },
         pageRefresh: function () {
             // this.getAllCourses();
             this.getMaterials();
+            this.getQuizzes();
             this.searchError = "";
             this.searchStr = "";
         }
     },
     created: function () {
         // on Vue instance created, load the course list
+        this.getQuizzes();
         this.getMaterials();
+        // this.getQuizzes();
         // this.getAllTrainers();
     }
 });

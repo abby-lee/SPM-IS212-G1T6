@@ -226,6 +226,69 @@ def addCourse():
             "message": "Unable to add course to database."
         }), 500
 
+#Update course
+@app.route("/courses", methods=['PATCH'])
+def updateCourse():
+    if request:
+        data = request.get_json()
+
+        course_code = data['course_code']
+        course = Courses.query.filter_by(course_code=course_code).first()
+
+        if course:
+
+            if data['course_title']:
+                course.course_title = data['course_title']
+            if data['course_code']:
+                course.course_code = data['course_code']
+            if data['description']:
+                course.description = data['description']
+            if data['prerequisites']:
+                course.prerequisites = data['prerequisites']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": [course.to_dict()]
+                }
+            ), 200
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "course_code": course_code
+            },
+            "message": "Course not found."
+        }
+    ), 404
+
+#Delete course
+@app.route("/courses/<int:course_code>", methods=['DELETE'])
+def deleteCourse(course_code):
+    course = Courses.query.filter_by(course_code=course_code).first()
+    if course:
+        db.session.delete(course)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "course_code": course_code,
+                    "message": "Course deleted successfully"
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "course_code": course_code
+            },
+            "message": "Course not found."
+        }
+    ), 404
+
+
 #get all learners
 @app.route("/learners")
 def learners():
