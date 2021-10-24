@@ -82,8 +82,6 @@ class Learners(db.Model):
     learners_email = db.Column(db.String(1000))
     learners_qualifications = db.Column(db.String(1000))
     courses_completed = db.Column(db.String(1000))
-    class_section = db.Column(db.String(2), db.ForeignKey(Sections.class_section))
-    course_code = db.Column(db.Integer, db.ForeignKey(Courses.course_code))
 
     def to_dict(self):
         """
@@ -114,14 +112,14 @@ class Admins(db.Model):
             result[column] = getattr(self, column)
         return result
 
-class Enrols(db.Model):
-    __tablename__ = 'enroling'
+class Progress(db.Model):
+    __tablename__ = 'progress'
 
     learners_eid = db.Column(db.Integer, db.ForeignKey(Learners.learners_eid), primary_key=True)
     course_code = db.Column(db.Integer, db.ForeignKey(Courses.course_code), primary_key=True)
     class_section = db.Column(db.Integer, db.ForeignKey(Sections.class_section), primary_key=True)
-    #learners_eid = db.Column(db.Integer, db.ForeignKey('learners_eid'), primary_key=True)
-    #course_code = db.Column(db.Integer, db.ForeignKey('course_code'), primary_key=True)
+    chapter_completed = db.Column(db.Integer)
+    
 
     def to_dict(self):
         """
@@ -134,10 +132,11 @@ class Enrols(db.Model):
             result[column] = getattr(self, column)
         return result
 
-    def __init__(self, course_code, learners_eid, class_section):
+    def __init__(self, course_code, learners_eid, class_section, chapter_completed):
         self.course_code = course_code
         self.learners_eid = learners_eid
         self.class_section = class_section
+        self.chapter_completed = chapter_completed
 
 class Quizzes(db.Model):
     __tablename__ = 'quizzes'
@@ -207,6 +206,7 @@ class Materials(db.Model):
     material_name= db.Column(db.String(100))
     material_type = db.Column(db.String(100))
     material_link = db.Column(db.String(1000))
+    material_chapter = db.Column(db.Integer)
 
     def to_dict(self):
         """
@@ -221,8 +221,6 @@ class Materials(db.Model):
 
 db.create_all()
 
-
-
 #get all courses
 @app.route("/courses")
 def courses():
@@ -234,6 +232,42 @@ def courses():
         }
     ), 200
 
+#get eligible courses
+@app.route("/<int:learners_eid>/courses")
+def eligible_courses(learners_eid):
+    eligible_courses = []
+    course_list = Courses.query.all()
+    if course_list:
+        for course in course_list:
+            prerequisites = request.args.get('prerequisites', course.prerequisites)   
+            if prerequisites == "":
+                eligible_courses.append(course.to_dict())
+            else:
+                learner = Learners.query.filter_by(learners_eid=learners_eid).first()
+                if learner:
+                    completed_courses = request.args.get('courses_completed', learner.courses_completed)        
+                    if completed_courses == prerequisites:
+                        eligible_courses.append(course.to_dict())
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "learner_eid": learners_eid,
+                    "courses_completed": eligible_courses
+                }
+            }
+        )
+    return jsonify (
+        {
+            "code": 404,
+            "data": {
+                "learner_eid": learners_eid
+            },
+            "message": "No eligible courses found."
+        }
+    )
+
+## NEED CHANGE ##
 # get learners by course 
 @app.route("/learners/<int:course_code>")
 def learner_by_course(course_code):
@@ -252,6 +286,8 @@ def learner_by_course(course_code):
             "message": "No learners in this course."
         }), 404
 
+
+## NEED CHANGE ##
 # add learner to course 
 @app.route("/enrols", methods=['POST'])
 @cross_origin()
@@ -277,6 +313,8 @@ def add_learner():
             "message": "Unable to commit to database."
         }), 500
 
+
+## NEED CHANGE ##
 # remove learner from course
 @app.route("/enrols/<int:course_code>/<string:learners_eid>", methods=['DELETE'])
 def delete_book(course_code, learners_eid):
@@ -433,6 +471,7 @@ def get_quizzes(class_section, course_code):
 
 #get all class materials related to the course
 @app.route("/materials/<string:class_section>/<int:course_code>")
+@cross_origin()
 def get_class_material(class_section, course_code):
     material_list = Materials.query.filter_by(class_section=class_section, course_code=course_code).all()
     return jsonify(
@@ -442,6 +481,8 @@ def get_class_material(class_section, course_code):
         }
     ), 200
 
+
+## NEED CHANGE ##
 #add course material
 @app.route("/materials", methods=['POST'])
 @cross_origin()
@@ -453,7 +494,8 @@ def add_material():
                        'class_section', 
                        'material_name', 
                        'material_type', 
-                       'material_link')):
+                       'material_link',
+                       'material_chapter')):
         return jsonify({
             "message": "Incorrect JSON object provided."
         }), 500

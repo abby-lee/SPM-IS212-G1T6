@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root' + \
@@ -20,7 +21,7 @@ class Courses(db.Model):
     course_title = db.Column(db.String(26))
     description = db.Column(db.String(1000))
     prerequisites = db.Column(db.String(1000))
-
+    
     def to_dict(self):
         """
         'to_dict' converts the object into a dictionary,
@@ -31,6 +32,12 @@ class Courses(db.Model):
         for column in columns:
             result[column] = getattr(self, column)
         return result
+    
+    # def __init__(self, course_code, course_title, description, prerequisites):
+    #     self.course_code = course_code
+    #     self.course_title = course_title
+    #     self.description = description
+    #     self.prerequisites = prerequisites
     
 class Sections(db.Model):
     __tablename__ = 'sections'
@@ -136,52 +143,34 @@ class Enrols(db.Model):
         self.learners_eid = learners_eid
         self.class_section = class_section
 
-
 db.create_all()
 
-#get prerequisites
-@app.route("/courses/<int:course_code>/prerequisites")
-def prerequisites_by_course(course_code):
-    course = Courses.query.filter_by(course_code=course_code).first()
-    if course:
-        prerequisites_list = request.args.get('prerequisites', course.prerequisites)        
-        if prerequisites_list == None:
-            prerequisites_list = 'No prerequisites'
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "course_code": course_code,
-                    "prerequisites": prerequisites_list
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "data": {
-                "course_code": course_code
-            },
-            "message": "Course is not found."
-        }
-    )
-
-#get completed courses
-@app.route("/<int:learners_eid>/completed")
-def completed_courses(learners_eid):
-    learner = Learners.query.filter_by(learners_eid=learners_eid).all()
-    if learner:
-        courses_completed = request.values.get('courses_completed', default=None, type=str)
+#get eligible courses
+@app.route("/<int:learners_eid>/courses")
+def eligible_courses(learners_eid):
+    eligible_courses = []
+    course_list = Courses.query.all()
+    if course_list:
+        for course in course_list:
+            prerequisites = request.args.get('prerequisites', course.prerequisites)   
+            if prerequisites == "":
+                eligible_courses.append(course.to_dict())
+            else:
+                learner = Learners.query.filter_by(learners_eid=learners_eid).first()
+                if learner:
+                    completed_courses = request.args.get('courses_completed', learner.courses_completed)        
+                    if completed_courses == prerequisites:
+                        eligible_courses.append(course.to_dict())
         return jsonify(
             {
                 "code": 200,
                 "data": {
                     "learner_eid": learners_eid,
-                    "courses_completed": courses_completed
+                    "courses_completed": eligible_courses
                 }
             }
         )
-    return jsonify(
+    return jsonify (
         {
             "code": 404,
             "data": {
@@ -191,30 +180,6 @@ def completed_courses(learners_eid):
         }
     )
 
-# #get eligible courses
-# @app.route("/<int:learners_eid>/courses")
-# def eligible_courses(learners_eid):
-#     if 
-
-# #get eligible courses
-# @app.route("/courses/learners/<int:learners_eid>")
-# def eligible_courses(learners_eid):
-#     prerequisites = request.args.get('prerequisites')
-#     if prerequisites:
-#         eligible = Learners.query.filter(Learners.courses_completed.contains(prerequisites))
-#     # eligible_courses = Courses.query.filter_by(prerequisites=prerequisites)
-#         return jsonify(
-#             {
-#                 "data": [course.to_dict() for course in eligible]
-#             }
-#         ), 200
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "message": "not eligible"
-#         },
-#     ), 404
-    
 # get learners by course 
 @app.route("/courses/<int:course_code>")
 def learner_by_course(course_code):
@@ -268,6 +233,64 @@ def get_trainers():
             "data": [trainer.to_dict() for trainer in trainers_list]
         }
     ), 200
+
+# #get prerequisites
+# @app.route("/courses/<int:course_code>/prerequisites")
+# def course_prerequisites(course_code):
+#     course = Courses.query.filter_by(course_code=course_code).first()
+#     if course:
+#         prerequisites_list = request.args.get('prerequisites', course.prerequisites)        
+#         if prerequisites_list == None:
+#             prerequisites_list = "None"
+#         else:
+#             prerequisites_list = "No prerequisites"
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": {
+#                     "course_code": course_code,
+#                     "prerequisites": prerequisites_list
+#                 }
+#             }
+#         )
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "data": {
+#                 "course_code": course_code
+#             },
+#             "message": "Course is not found."
+#         }
+#     )
+
+# #get completed courses
+# @app.route("/<int:learners_eid>/completed")
+# def completed_courses(learners_eid):
+#     learner = Learners.query.filter_by(learners_eid=learners_eid).first()
+#     if learner:
+#         completed_courses = request.args.get('courses_completed', learner.courses_completed)        
+#         if completed_courses == None:
+#             completed_courses = "None"
+#         else:
+#             completed_courses = "No completed courses"
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": {
+#                     "learner_eid": learners_eid,
+#                     "courses_completed": completed_courses
+#                 }
+#             }
+#         )
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "data": {
+#                 "learner_eid": learners_eid
+#             },
+#             "message": "Learner is not found."
+#         }
+#     )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

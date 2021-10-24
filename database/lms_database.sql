@@ -156,6 +156,8 @@ INSERT INTO `sections` (`class_section`, `course_code`, `class_size`, `duration`
 -- Table structure for table `learners`
 --
 
+-- CHANGE: Remove course_code and class_section so that one learner can take up multiple courses
+ 
 DROP TABLE IF EXISTS `learners`;
 CREATE TABLE IF NOT EXISTS `learners` (
   `learners_eid` int(11) NOT NULL AUTO_INCREMENT,
@@ -163,41 +165,40 @@ CREATE TABLE IF NOT EXISTS `learners` (
   `learners_email` varchar(1000) NOT NULL,
   `learners_qualifications` varchar(1000) NOT NULL,
   `courses_completed` varchar(1000) DEFAULT NULL,
-  `class_section` varchar(2) DEFAULT NULL,
-  `course_code` int(11) DEFAULT NULL,
 
-  PRIMARY KEY (`learners_eid`),
-  CONSTRAINT `learners_ibfk_1` FOREIGN KEY (`class_section`) REFERENCES `sections` (`class_section`),
-  CONSTRAINT `learners_ibfk_2` FOREIGN KEY (`course_code`) REFERENCES `courses` (`course_code`)
+  PRIMARY KEY (`learners_eid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `learners`
 --
 
-INSERT INTO `learners` (`learners_eid`, `learners_name`, `learners_email`, `learners_qualifications`, `courses_completed`, `class_section`, `course_code`) VALUES
-(1, 'Marcus Foo', 'Marcus.Foo@gmail.com', "Bachelor's Degree in Customer Relationship Management", 'Customer Service:Soft Skills Fundamentals', 'G1', 1008),
-(2, 'Alan Chan', 'Alan.Chan@gmail.com', "Bachelor's Degree in Information Systems", 'Introduction to Printing Solutions', 'G1', 1008),
-(3, 'Hong Seng', 'Hong.Seng@gmail.com', "Bachelor's Degree in Maintenance Engineering", '', 'G1', 1008),
-(4, 'Jennifer Lawrence', 'Jennifer.Lawrence@gmail.com', "Bachelor's Degree in Maintenance Engineering",'Conduct of Maintenance for Printers/Copiers','G2', 1003),
-(5, 'June Chow', 'June.Chow@gmail.com',"Bachelor's Degree in Technology Management", '','G2', 1003),
-(6, 'Phil Lee', 'Phil.Lee@gmail.com', "Bachelor's Degree in Customer Service",'Maintenance Planning & Scheduling', 'G1', 1008),
-(7, 'Jacob Tok', 'Jacob.Tok@gmail.com', "Bachelor's Degree in Computer Engineering",'Foundations of Printer Repairs','G3', 1005),
-(8, 'Yong Hao Koh', 'Yong Hao.Koh@gmail.com', "Bachelor's Degree in Electrical Engineering with a Minor in Field Studies",'','G2', 1003),
-(9, 'Jones Low', 'Jones.Low@gmail.com',  "Bachelor's Degree in Electrical Engineering", 'Foundations of how Copiers work','G3', 1005),	
-(10, 'Linda	Teng', 'Linda.Teng@gmail.com', "Bachelor's Degree in Engineering Technology",'','G1', 1008);
+INSERT INTO `learners` (`learners_eid`, `learners_name`, `learners_email`, `learners_qualifications`, `courses_completed`) VALUES
+(1, 'Marcus Foo', 'Marcus.Foo@gmail.com', "Bachelor's Degree in Customer Relationship Management", 'Customer Service:Soft Skills Fundamentals'),
+(2, 'Alan Chan', 'Alan.Chan@gmail.com', "Bachelor's Degree in Information Systems", 'Introduction to Printing Solutions'),
+(3, 'Hong Seng', 'Hong.Seng@gmail.com', "Bachelor's Degree in Maintenance Engineering", ''),
+(4, 'Jennifer Lawrence', 'Jennifer.Lawrence@gmail.com', "Bachelor's Degree in Maintenance Engineering",'Conduct of Maintenance for Printers/Copiers'),
+(5, 'June Chow', 'June.Chow@gmail.com',"Bachelor's Degree in Technology Management", ''),
+(6, 'Phil Lee', 'Phil.Lee@gmail.com', "Bachelor's Degree in Customer Service",'Maintenance Planning & Scheduling'),
+(7, 'Jacob Tok', 'Jacob.Tok@gmail.com', "Bachelor's Degree in Computer Engineering",'Foundations of Printer Repairs'),
+(8, 'Yong Hao Koh', 'Yong Hao.Koh@gmail.com', "Bachelor's Degree in Electrical Engineering with a Minor in Field Studies",''),
+(9, 'Jones Low', 'Jones.Low@gmail.com',  "Bachelor's Degree in Electrical Engineering", 'Foundations of how Copiers work'),	
+(10, 'Linda	Teng', 'Linda.Teng@gmail.com', "Bachelor's Degree in Engineering Technology",'');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `enroling`
+-- Table structure for table `progress`
 --
 
-DROP TABLE IF EXISTS `enroling`;
-CREATE TABLE IF NOT EXISTS `enroling` (
+-- CHANGE: Rename enroling table to progress & added chapter_completed column to track if learners completed a lesson before accessing the materials for another lesson
+
+DROP TABLE IF EXISTS `progress`;
+CREATE TABLE IF NOT EXISTS `progress` (
   `learners_eid` int(11) NOT NULL,
   `course_code` int(11) NOT NULL,
   `class_section` varchar(2) NOT NULL,
+  `chapter_completed` int(100) NOT NULL,
 
   PRIMARY KEY (`learners_eid`, `course_code`, `class_section`),
   CONSTRAINT `enroling_ibfk_1` FOREIGN KEY (`learners_eid`) REFERENCES `learners` (`learners_eid`),
@@ -293,6 +294,8 @@ INSERT INTO `quizanswers` (`course_code`, `class_section`, `quizid`, `questionid
 -- Table structure for table `materials`
 --
 
+-- CHANGE: Added material_chapter column to link the materials to a lesson (there may be several materials under one lesson)
+
 DROP TABLE IF EXISTS `materials`;
 CREATE TABLE IF NOT EXISTS `materials` (
   `material_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -301,6 +304,7 @@ CREATE TABLE IF NOT EXISTS `materials` (
   `material_name` varchar(100) NOT NULL,
   `material_type` varchar(100) NOT NULL,
   `material_link` varchar(1000) NOT NULL,
+  `material_chapter` int(100) NOT NULL,
   
   PRIMARY KEY (`material_id`, `course_code`, `class_section`),
   CONSTRAINT `materials_ibfk_1` FOREIGN KEY (`course_code`) REFERENCES `courses` (`course_code`),

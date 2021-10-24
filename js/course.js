@@ -27,6 +27,7 @@ var app = new Vue({
         materialID: 0,
         materialType: "",
         materialLink: "",
+        materialChap: 0,
 
         "quizzes" :[],
         quizid: 0,
@@ -65,7 +66,6 @@ var app = new Vue({
             // this.statusMessage = "";
             // this.msg = "";
 
-            console.log("hey")
             this.courseCode = 1003;
             this.classSection = "G2"
 
@@ -76,10 +76,11 @@ var app = new Vue({
                 material_name: this.materialName,
                 material_type: this.materialType,
                 material_link: this.materialLink,
+                material_chapter: this.materialChap
             });
             // console.log(jsonData)
 
-            if (this.materialName === "" || this.materialID === "" || this.materialType === "" || this.materialLink === "") {
+            if (this.materialName === "" || this.materialID === "" || this.materialType === "" || this.materialLink === "" || this.materialChap === 0) {
                 this.msg = "Please fill in required fields.";
             }
             fetch(`${materials_url}`, {
@@ -103,6 +104,7 @@ var app = new Vue({
                         this.materialName = "";
                         this.materialType = "";
                         this.materialLink = "";
+                        this.materialLink = 0;
                         this.pageRefresh()
 
                         break;
