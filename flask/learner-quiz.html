@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Portal</title>
+
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../css/styles.css" rel="stylesheet" />
+
+  <!-- Vue JS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+
+</head>
+
+<body>
+  <div id = "app">
+    <section class="wow fadeInUp mt-2"> 
+      <div style="display:center" class="container"> <!-- container START-->
+        <div> 
+          <nav class="navbar" style="margin-left: 0;">
+            <div class="container-fluid">
+              <span class="navbar-brand mb-0 h1"> {{ getCourseInfo() }} {{ getSectionInfo() }} QuizID: {{ getQuizInfo() }}</span>
+            </div>
+          </nav>
+
+          <br>
+
+          <!-- Add Materials -->
+          <!-- <div>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addQuestionModal">
+                Add question
+            </button>
+          </div> -->
+
+          <!-- Modal to Add Materials -->
+          <!-- <div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+  
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addQuestionModalLongTitle">Add Question</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+   -->
+          <div class="modal-body">
+            <form method="POST" action={{url_for('getQuizForm')}}>
+              {% for q in questList %}
+              <a href="{{url_for('getQuizForm',sub=q.subject,qid=q.qid)}}"><button>{{q.qid}}</button></a>
+              {% endfor %}
+            </form>
+
+            {% block content %}
+            <!-- <form method="POST" action={{url_for('saveAns')}}> -->
+            <form method="POST">
+            <div class="question"><h5><input type="text" name="qid" value={{qid}} style="border-style:none; width:20px"> <input type="text" name="subject" value='{{quest.subject}}' style="border-style:none"> </h5></div>
+            <div class="qst" v-if='{{qid.questiontype}} == "mcq"'>{{qid.questiontext}}
+              <div class="opt"><input type="radio" name="answer" value="1"> {{ choices[0] }}</div>
+              <div class="opt"><input type="radio" name="answer" value="2"> {{ choices[1] }}</div>
+              <div class="opt"><input type="radio" name="answer" value="3"> {{ choices[2] }}</div>
+              <div class="opt"><input type="radio" name="answer" value="4"> {{ choices[3] }}</div>
+            </div>
+            <div class="qst" v-else>{{qid.questiontext}}
+              <div class="opt"><input type="radio" name="answer" value="1"> {{ choices[0] }}</div>
+              <div class="opt"><input type="radio" name="answer" value="2"> {{ choices[1] }}</div>
+            </div>
+              <input type="submit" value="Save Answer"/>
+            </form>
+            <!-- Display the countdown timer in an element -->
+<p id="timer"></p>
+
+<script>
+  $(document).on("click", "[button]", function() {
+    var button = document.getElementById('my_btn');
+        var time = 5;
+        var timer = setInterval(function() {
+          if (time > 0) {
+            time--;
+            button.disabled = true;
+            button.innerHTML = 'Please wait for '+time+ ' seconds' ;
+            console.log(time);
+          }
+          if (time === 0) {
+            button.disabled = false;
+            button.innerHTML = 'Press Me' ;
+          }
+        }, 1000);
+    });
+// Set the date we're counting down to
+var countDownDate = new TimeRanges().getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  document.getElementById("timer").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+  // document.getElementById("demo").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "Quiz End";
+  }
+}, 1000);
+</script>
+
+
+          </div>
+        </div>  
+      </div>
+      <!-- Button trigger modal -->
+      
+    <br>
+
+    <!-- Table of Questions -->
+    <div class="container" style="display:center">
+      <div class="row">
+          <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Question ID</th>
+                    <th scope="col">Question</th>
+                    <th scope="col">Question Type</th>
+                    <th scope="col">Question Options</th>
+                    <th scope="col">Question Answer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="question in questions">
+                    <td>{{ question.questionid }}</td>
+                    <td>{{ question.questiontext }}</td>
+                    <td>{{ question.questiontype }}</td>
+                    <td>{{ question.questionoptions }}</td>
+                    <td> {{ question.answertext }}</td>
+                </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+    <!-- End Table -->
+    
+    </section>
+  </div>
+
+  <script type="text/javascript" src="../js/trainer.js"></script>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+</body>
+</html>

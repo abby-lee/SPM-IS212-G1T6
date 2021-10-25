@@ -2,9 +2,15 @@ from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from sqlalchemy.exc import SQLAlchemyError
+from flask_wtf import FlaskForm as Form
+from wtforms import RadioField
+from wtforms.validators import ValidationError
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/lms_database'
+#Mac config
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root' + \
+#                                         '@localhost:8889/lms_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
                                            'pool_recycle': 280}
@@ -82,8 +88,6 @@ class Learners(db.Model):
     learners_email = db.Column(db.String(1000))
     learners_qualifications = db.Column(db.String(1000))
     courses_completed = db.Column(db.String(1000))
-    class_section = db.Column(db.String(2), db.ForeignKey(Sections.class_section))
-    course_code = db.Column(db.Integer, db.ForeignKey(Courses.course_code))
 
     def to_dict(self):
         """
@@ -114,14 +118,14 @@ class Admins(db.Model):
             result[column] = getattr(self, column)
         return result
 
-class Enrols(db.Model):
-    __tablename__ = 'enroling'
+class Progress(db.Model):
+    __tablename__ = 'progress'
 
     learners_eid = db.Column(db.Integer, db.ForeignKey(Learners.learners_eid), primary_key=True)
     course_code = db.Column(db.Integer, db.ForeignKey(Courses.course_code), primary_key=True)
     class_section = db.Column(db.Integer, db.ForeignKey(Sections.class_section), primary_key=True)
-    #learners_eid = db.Column(db.Integer, db.ForeignKey('learners_eid'), primary_key=True)
-    #course_code = db.Column(db.Integer, db.ForeignKey('course_code'), primary_key=True)
+    chapter_completed = db.Column(db.Integer)
+    
 
     def to_dict(self):
         """
@@ -134,10 +138,11 @@ class Enrols(db.Model):
             result[column] = getattr(self, column)
         return result
 
-    def __init__(self, course_code, learners_eid, class_section):
+    def __init__(self, course_code, learners_eid, class_section, chapter_completed):
         self.course_code = course_code
         self.learners_eid = learners_eid
         self.class_section = class_section
+        self.chapter_completed = chapter_completed
 
 class Quizzes(db.Model):
     __tablename__ = 'quizzes'
@@ -167,6 +172,7 @@ class Quizquestions(db.Model):
     questiontext = db.Column(db.String(1000))
     questiontype = db.Column(db.String(4))
     questionoptions = db.Column(db.String(1000))
+    answertext = db.Column(db.String(1000))
 
     def to_dict(self):
         """
@@ -179,13 +185,17 @@ class Quizquestions(db.Model):
             result[column] = getattr(self, column)
         return result
 
-class Quizanswers(db.Model):
-    __tablename__ = 'quizanswers'
-    questionid= db.Column(db.Integer, db.ForeignKey(Quizquestions.questionid) ,primary_key=True)
-    quizid= db.Column(db.Integer, db.ForeignKey(Quizzes.quizid), primary_key=True)
+
+class Materials(db.Model):
+    __tablename__ = 'materials'
+
+    material_id= db.Column(db.Integer ,primary_key=True, autoincrement=True)
     class_section = db.Column(db.String(2), db.ForeignKey(Sections.class_section), primary_key=True)
     course_code = db.Column(db.Integer, db.ForeignKey(Courses.course_code), primary_key=True)
-    answertext = db.Column(db.String(1000))
+    material_name= db.Column(db.String(100))
+    material_type = db.Column(db.String(100))
+    material_link = db.Column(db.String(1000))
+    material_chapter = db.Column(db.Integer)
 
     def to_dict(self):
         """
@@ -217,45 +227,72 @@ def getQuizzes(course_code, class_section):
         "message": "No quizzes created yet."
     })
 
+# @app.route("/<int:course_code>/<string:class_section>/<int:quizid>")
+# def getQuizQuestions(course_code, class_section, quizid):
+#     qnsid = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
+#     if qnsid:
+#         choices = []
+#         getchoices = request.args.get('questionoptions', Quizquestions.questionoptions)
+#         choices = getchoices.split(',')   #??????
+#         return jsonify({
+#             "data": {
+#                 "questionoptions" : choices
+#             }
+#             # "data": [qns.to_dict() for qns in qnsid]
+#         }),200
+#     else:
+#         return jsonify({
+#             "code": 404,
+#             "data": {
+#                 "course_code": course_code,
+#                 "class_section": class_section
+#             },
+#             "message": "No quiz questions created yet."
+#         })
 # 2. Display quiz questions as a form
 @app.route("/<int:course_code>/<string:class_section>/<int:quizid>")
-def getQuizQuestions(course_code, class_section, quizid):
-    quizquestions = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
+def getQuizForm(course_code, class_section, quizid):
+    qid = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
+    if qid:
+        form = Quizquestions() 
+        for qns in qid:
+        # type = request.args.get('questiontype', qns.questiontype)
+        # question = request.args.get('questiontext', qns.questiontype)
+            options = request.args.get('questionoptions', qns.questionoptions)
+            choices = options.split(',')
+            if choices.count() > 2:   #mcq
+                RadioField(qns.questiontext, choices=choices, validators=qns.answertext)
+            else:   #true/false
+                RadioField(Quizquestions.questiontext, choices=['True', 'False'], validators=Quizquestions.answertext)
+        return render_template('trainer-question.html', form=form, choices=choices)
+
+
+        # validators=CorrectAnswer(Quizquestions.answertext))
+        # @app.route(‘/passed’)
+        # if form.validate_on_submit(): 
+        #     return redirect(url_for('passed'))
+        # def __call__(self, form, field):
+        #     message = 'Incorrect answer.'
+        #     if field.data != self.answer:
+        #         raise ValidationError(message)
+
+
+
     # if request.method == 'POST':
-    for quizquestion in quizquestions:
-        question = quizquestion.questiontext
+    # for quizquestion in quizquestions:
+    #     question = quizquestion.questiontext
         # singleoptions = []
-        options = quizquestion.questionoptions
+        # options = quizquestion.questionoptions
         # for option in options:
             # singleoptions = singleoptions.append(option)
             # singleoptions = option
-        return jsonify({
-            "code": 200,
-            "data": {
-                "questiontext": question,
-                "questionoptions": options
-            }
-        })
+      
         # return render_template('quiz_learner.html', title='Quiz Questions', question=question, singleoptions=singleoptions)
-    # if quizquestions:
-    #     return jsonify({
-    #         "code": 200,
-    #         "data": {
-    #             "data": [question.to_dict() for question in quizquestions]
-    #         }
-    #     })
+    
 
-    return jsonify({
-        "code": 404,
-        "data": {
-            "course_code": course_code,
-            "class_section": class_section,
-        },
-        "message": "Quiz does not exist."
-    }), 404
 
 # 3. Set timer
-
+# @app.route("</int:course_code>/<string:class_section>/<int:quizid>")
 
 
 # answers = []
