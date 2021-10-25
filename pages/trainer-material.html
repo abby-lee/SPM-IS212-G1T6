@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrators Portal </title>
+    <title>Trainers Portal </title>
 
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
     <!-- Bootstrap icons-->
@@ -20,28 +20,29 @@
 <body>
   <div id = "app">
     <section class="wow fadeInUp mt-2"> 
-      <div style="display:center" class="container"> <!-- container START-->
+      <div> <!-- container START-->
         <div> 
-          <nav class="navbar" style="margin-left: 0;">
-            <div class="container-fluid">
-              <span class="navbar-brand mb-0 h1">Course Name</span>
+          <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container px-lg-5">
+                <a class="navbar-brand" > {{ getCourseInfo() }} {{ getSectionInfo() }} </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                      <li class="nav-item"><a class="nav-link" aria-current="page" href="index.html">Home</a></li>
+                      <li class="nav-item"><a class="nav-link" href="chat.html">Chat</a></li>
+                      <li class="nav-item"><a class="nav-link" href="#!">Profile</a></li>
+                    </ul>
+                </div>
             </div>
           </nav>
-
-          <br>
-
-          <!-- Add Materials -->
-          <div>
+            <!-- Add Materials/Quiz -->
+          <div class="py-3 text-center">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMaterialsModal">
                 Add Materials
             </button>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addQuizModal">
                 Add Quiz
             </button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" @click="pageRefresh()">
-              Update Table
-          </button>
-          </div>
 
           <!-- Modal to Add Materials -->
           <div class="modal fade" id="addMaterialsModal" tabindex="-1" role="dialog" aria-labelledby="addMaterialsModalTitle" aria-hidden="true">
@@ -61,36 +62,32 @@
                     <thead>
                       <tr>
                         <td class="form-group">
-                          <label for="materialName" class="cta-text">Material Name</label><span class="text-danger">*</span>
-                          <input required name="materialName" v-model="materialName" type="text" class="form-control" id="materialName" placeholder="Enter Name of Material">
+                          <label for="material_name" class="cta-text">Material Name</label><span class="text-danger">*</span>
+                          <input required name="material_name" v-model="material_name" type="text" class="form-control" id="material_name" placeholder="Enter Name of Material">
                         </td>
                       </tr>
-  
                       <tr>
                         <td class="form-group">
-                          <label for="materialType" class="cta-text">Material Type</label><span class="text-danger">*</span>
-                          <input required name="materialType" v-model="materialType" type="text" class="form-control" id="materialType"
+                          <label for="material_type" class="cta-text">Material Type</label><span class="text-danger">*</span>
+                          <input required name="material_type" v-model="material_type" type="text" class="form-control" id="material_type"
                             placeholder="Enter Type of Material (e.g. Doc, Slides)">
                         </td>
                       </tr>
-  
                       <tr>
                         <td class="form-group">
-                          <label for="materialLink" class="cta-text">Material Link</label><span class="text-danger">*</span>
-                          <input name = "materialLink" v-model="materialLink" type="text" class="form-control" id="materialLink" 
+                          <label for="material_link" class="cta-text">Material Link</label><span class="text-danger">*</span>
+                          <input name = "material_link" v-model="material_link" type="text" class="form-control" id="material_link" 
                             placeholder="Google Link of your Material">
                         </td>
                       </tr>
 
                       <tr>
                         <td class="form-group">
-                          <label for="materialChap" class="cta-text">Lesson Number</label><span class="text-danger">*</span>
-                          <input name = "materialChap" v-model="materialChap" type="number" class="form-control" id="materialChap" 
+                          <label for="material_chapter" class="cta-text">Lesson Number</label><span class="text-danger">*</span>
+                          <input name = "material_chapter" v-model="material_chapter" type="number" class="form-control" id="material_chapter" 
                             placeholder="Add which Lesson Number this material belongs to">
                         </td>
                       </tr>
-
-
                     </thead>
                   </table>
                 
@@ -98,7 +95,6 @@
   
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <!-- onclick = "return addCourse()" -->
                   <button type="button" @click="addMaterial()" class="btn btn-primary" v-on:submit.prevent="onSubmit" data-dismiss="modal" >Add Material</button>
                 
   
@@ -144,20 +140,6 @@
                   <form> 
                     <table class="table table-striped">
                       <thead>
-                        <!-- <tr>
-                          <td class="form-group">
-                            <label for="courseCode" class="cta-text">Course Code</label> <span class="text-danger"> *Required</span>
-                            <input required name="ccode" v-model="newcourseCode" type="text" class="form-control" id="newCode" placeholder="Enter Course Code">
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td class="form-group">
-                            <label for="classSection" class="cta-text">Course Section</label> <span class="text-danger"> *Required</span>
-                            <input required name="cname" v-model="newclassSection" type="text" class="form-control" id="classSection" placeholder="Enter Class Section">
-                          </td>
-                        </tr> -->
-    
                         <tr>
                           <td class="form-group">
                             <label for="time" class="cta-text">Time (in minutes)</label><span class="text-danger"> *Required</span>
@@ -215,7 +197,6 @@
   
       </div>
     </div>
-      <!-- Button trigger modal -->
       
     <br>
 
@@ -228,6 +209,7 @@
                     <th scope="col">Material Title</th>
                     <th scope="col">Material Type</th>
                     <th scope="col">Link</th>
+                    <th scope="col">Lesson</th>
                 </tr>
             </thead>
             <tbody>
@@ -237,6 +219,7 @@
                     <td> 
                         <a class="btn btn-outline-primary" :href="material.material_link" role="button">{{ material.material_type }} Link</a>
                     </td>
+                    <td>{{ material.material_chapter }}</td>
                 </tr>
             </tbody>
           </table>
@@ -262,7 +245,7 @@
                     <td v-if="quiz.graded =='T'">Final Quiz</td>
                     <td v-if="quiz.graded =='F'">Progress Quiz</td>
                     <td> 
-                        <a class="btn btn-outline-primary" :href="#" role="button"> View/Add</a>
+                        <a class="btn btn-outline-primary" @click="storeQuizInfo(quiz.quizid)" href= "trainer-question.html" role="button" > View/Add</a>
                     </td>
                 </tr>
             </tbody>
@@ -273,7 +256,7 @@
     </section>
   </div>
 
-  <script type="text/javascript" src="../js/course.js"></script>
+  <script type="text/javascript" src="../js/trainer.js"></script>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

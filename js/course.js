@@ -2,7 +2,7 @@ var get_all_URL = "http://localhost:5000/courses";
 var get_all_trainers = "http://localhost:5000/trainers";
 var get_all_learners = "http://localhost:5000/learners";
 var materials_url = "http://localhost:5000/materials";
-var quizzes_url = "http://localhost:5000/quizzes"
+var quizzes_url = "http://localhost:5000/quizzes";
 
 var app = new Vue({
     el: "#app",
@@ -37,8 +37,10 @@ var app = new Vue({
     },
     methods: {
         getMaterials: function () { 
-            this.courseCode = 1003;
+            this.courseCode = localStorage.getItem("course_code");
             this.classSection = "G2"
+
+            console.log(this.courseCode)
 
             const response =
                 fetch(`${materials_url}/${this.classSection}/${this.courseCode}`)
@@ -313,7 +315,7 @@ var app = new Vue({
             .then(response => response.json())
             .then(data => {
                 result = data.data;
-                console.log(result);
+                console.log(result[0].quizid);
                 // 3 cases
                 switch (data.code) {
                     case 200:

@@ -5,6 +5,9 @@ from sqlalchemy.exc import SQLAlchemyError
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/lms_database'
+#Mac config
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root' + \
+#                                         '@localhost:8889/lms_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
                                            'pool_recycle': 280}
@@ -166,24 +169,6 @@ class Quizquestions(db.Model):
     questiontext = db.Column(db.String(1000))
     questiontype = db.Column(db.String(4))
     questionoptions = db.Column(db.String(1000))
-
-    def to_dict(self):
-        """
-        'to_dict' converts the object into a dictionary,
-        in which the keys correspond to database columns
-        """
-        columns = self.__mapper__.column_attrs.keys()
-        result = {}
-        for column in columns:
-            result[column] = getattr(self, column)
-        return result
-
-class Quizanswers(db.Model):
-    __tablename__ = 'quizanswers'
-    questionid= db.Column(db.Integer, db.ForeignKey(Quizquestions.questionid) ,primary_key=True)
-    quizid= db.Column(db.Integer, db.ForeignKey(Quizzes.quizid), primary_key=True)
-    class_section = db.Column(db.String(2), db.ForeignKey(Sections.class_section), primary_key=True)
-    course_code = db.Column(db.Integer, db.ForeignKey(Courses.course_code), primary_key=True)
     answertext = db.Column(db.String(1000))
 
     def to_dict(self):
@@ -196,6 +181,7 @@ class Quizanswers(db.Model):
         for column in columns:
             result[column] = getattr(self, column)
         return result
+
 
 class Materials(db.Model):
     __tablename__ = 'materials'
@@ -356,10 +342,10 @@ def get_trainers():
         }
     ), 200
 
-#get all sections
-@app.route("/sections")
-def get_sections():
-    section_list = Sections.query.all()
+#get all section by course
+@app.route("/sections/<int:course_code>")
+def get_sections(course_code):
+    section_list = Sections.query.filter_by(course_code=course_code).all()
     return jsonify(
         {
             "data": [sections.to_dict()
@@ -395,6 +381,7 @@ def update_section(class_section, course_code):
 #add quiz
 #step 1 create quiz 
 @app.route("/quizzes", methods=['POST'])
+@cross_origin()
 def add_quiz():
     data = request.get_json()
     if not all(key in data.keys() for
@@ -407,7 +394,13 @@ def add_quiz():
     try:
         db.session.add(quiz)
         db.session.commit()
-        return jsonify(quiz.to_dict()), 201
+        return jsonify(
+            {
+                "code": 200,
+                "message": "Quiz has been added successfully.",
+                "data": [quiz.to_dict()]
+            }
+            ), 200
     except SQLAlchemyError as e:
         print(str(e))
         db.session.rollback()
@@ -415,13 +408,14 @@ def add_quiz():
             "message": "Unable to commit to database."
         }), 500
 
-#step2 add questions
-@app.route("/quizzes/<int:quizid>", methods=['POST'])
-def add_questions(quizid):
+#step2 add questions and answer
+@app.route("/questions", methods=['POST'])
+@cross_origin()
+def add_questions():
     data = request.get_json()
     if not all(key in data.keys() for
                key in ('quizid', 'class_section', 'course_code',
-                       'questiontext', 'questiontype', 'questionoptions')):
+                       'questiontext', 'questiontype', 'questionoptions', 'answertext')):
         return jsonify({
             "message": "Incorrect JSON object provided."
         }), 500
@@ -429,28 +423,13 @@ def add_questions(quizid):
     try:
         db.session.add(quizquestion)
         db.session.commit()
-        return jsonify(quizquestion.to_dict()), 201
-    except SQLAlchemyError as e:
-        print(str(e))
-        db.session.rollback()
-        return jsonify({
-            "message": "Unable to commit to database."
-        }), 500
-# step 3 add answer
-@app.route("/quizzes/<int:quizid>/<int:questionid>", methods=['POST'])
-def add_answers(quizid, questionid):
-    data = request.get_json()
-    if not all(key in data.keys() for
-               key in ('questionid', 'quizid', 'class_section', 'course_code',
-                       'answertext')):
-        return jsonify({
-            "message": "Incorrect JSON object provided."
-        }), 500
-    quizquestion = Quizanswers(**data)
-    try:
-        db.session.add(quizquestion)
-        db.session.commit()
-        return jsonify(quizquestion.to_dict()), 201
+        return jsonify(
+            {
+                "code": 200,
+                "message": "Question has been added successfully.",
+                "data": [quizquestion.to_dict()]
+            }
+            ), 200
     except SQLAlchemyError as e:
         print(str(e))
         db.session.rollback()
@@ -469,6 +448,18 @@ def get_quizzes(class_section, course_code):
         }
     ), 200
 
+#get quiz questions
+@app.route("/questions/<string:class_section>/<int:course_code>/<int:quizid>")
+def get_questions(class_section, course_code, quizid):
+    question_list = Quizquestions.query.filter_by(class_section=class_section, course_code=course_code, quizid=quizid).all()
+    return jsonify(
+        {
+            "data": [question.to_dict()
+                     for question in question_list]
+        }
+    ), 200
+
+
 #get all class materials related to the course
 @app.route("/materials/<string:class_section>/<int:course_code>")
 @cross_origin()
@@ -482,7 +473,6 @@ def get_class_material(class_section, course_code):
     ), 200
 
 
-## NEED CHANGE ##
 #add course material
 @app.route("/materials", methods=['POST'])
 @cross_origin()

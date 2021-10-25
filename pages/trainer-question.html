@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Portal</title>
+
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../css/styles.css" rel="stylesheet" />
+
+  <!-- Vue JS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+
+</head>
+
+<body>
+  <div id = "app">
+    <section class="wow fadeInUp mt-2"> 
+      <div style="display:center" class="container"> <!-- container START-->
+        <div> 
+          <nav class="navbar" style="margin-left: 0;">
+            <div class="container-fluid">
+              <span class="navbar-brand mb-0 h1"> {{ getCourseInfo() }} {{ getSectionInfo() }} QuizID: {{ getQuizInfo() }}</span>
+            </div>
+          </nav>
+
+          <br>
+
+          <!-- Add Materials -->
+          <div>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addQuestionModal">
+                Add question
+            </button>
+          </div>
+
+          <!-- Modal to Add Materials -->
+          <div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+  
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addQuestionModalLongTitle">Add Question</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+  
+                <div class="modal-body">
+                  <form > 
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <td class="form-group">
+                          <label for="questiontext" class="cta-text">Question</label><span class="text-danger">*</span>
+                          <input required name="questiontext" v-model="questiontext" type="text" class="form-control" id="questiontext" placeholder="Enter Question">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="form-group">
+                          <label for="questiontype" class="cta-text">Quiz Type: </label> <br>
+                          <input v-model="questiontype" type="radio" id="questiontype" name="questiontype" value="MCQ">
+                          <label for="MCQ"> MCQ </label><br>
+                          <input v-model="questiontype" type="radio" id="questiontype" name="questiontype" value="TF">
+                          <label for="TF"> True / False </label><br>
+                        </td>
+                      </tr>
+                      <tr v-if="questiontype == 'MCQ'">
+                        <td class="form-group">
+                          <label for="questionoptions" class="cta-text">Question Options</label><span class="text-danger">*</span>
+                          <input name = "questionoptions" v-model="questionoptions" type="text" class="form-control" id="questionoptions" 
+                            placeholder="Enter options separated by comma and no space">
+                        </td>
+                      </tr>
+                      <tr v-if="questiontype == 'MCQ'">
+                        <td class="form-group">
+                          <label for="answertext" class="cta-text">Answer</label><span class="text-danger">*</span>
+                          <input name = "answertext" v-model="answertext" type="text" class="form-control" id="answertext" 
+                            placeholder="Enter answer">
+                        </td>
+                      </tr>
+                      <tr v-if="questiontype == 'TF'">
+                        <td class="form-group">
+                          <label for="answertext" class="cta-text">Answer:</label> <br>
+                          <input v-model="answertext" type="radio" id="answertext" name="answertext" value="True">
+                          <label for="True"> True </label><br>
+                          <input v-model="answertext" type="radio" id="answertext" name="answertext" value="False">
+                          <label for="False"> False </label><br>
+                        </td>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" @click="addQuestion()"class="btn btn-primary" v-on:submit.prevent="onSubmit" data-dismiss="modal">Add Question</button>
+                
+                  <div class="row mt-4 justify-content-center">
+                    <div class="text-success" v-if="questionAdded">
+                      {{ statusMessage }} <br>
+                    </div>
+                  </div>
+                
+                  <div class="row mt-4 justify-content-center">
+                    <div class="text-danger" v-if="msg != ''">
+                      {{ msg }} <br>
+                    </div>
+                  </div>
+
+                  <div class="row justify-content-center">
+                    <div class="text-danger" v-if="addCourseError!=''">
+                      {{ errorMsg }}
+                    </div>
+                  </div> 
+                </div>
+
+              </div>
+            </form>
+          </div>
+        
+        </div>
+        <!-- End Modal Materials-->
+  
+      </div>
+    </div>
+      <!-- Button trigger modal -->
+      
+    <br>
+
+    <!-- Table of Questions -->
+    <div class="container" style="display:center">
+      <div class="row">
+          <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Question ID</th>
+                    <th scope="col">Question</th>
+                    <th scope="col">Question Type</th>
+                    <th scope="col">Question Options</th>
+                    <th scope="col">Question Answer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="question in questions">
+                    <td>{{ question.questionid }}</td>
+                    <td>{{ question.questiontext }}</td>
+                    <td>{{ question.questiontype }}</td>
+                    <td>{{ question.questionoptions }}</td>
+                    <td> {{ question.answertext }}</td>
+                </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+    <!-- End Table -->
+    
+    </section>
+  </div>
+
+  <script type="text/javascript" src="../js/trainer.js"></script>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+</body>
+</html>

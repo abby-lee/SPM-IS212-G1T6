@@ -1,4 +1,5 @@
-var get_all_URL = "http://localhost:5001/courses";
+var get_all_URL = "http://localhost:5000/courses";
+var materials_url = "http://localhost:5000/materials";
 
 
 var app = new Vue({
@@ -19,6 +20,10 @@ var app = new Vue({
         newPrerequisites: "",
         // courseAdded: false,
         // addCourseError: "",
+
+        "materials": [],
+        "material_chapters": [],
+        chapter_completed: 1
     },
     methods: {
         getAllCourses: function () {
@@ -74,10 +79,43 @@ var app = new Vue({
                     console.log(this.searchError + error);
                 });
         },
+        getMaterials: function () { 
+            this.courseCode = 1003;
+            this.classSection = "G2"
+
+            console.log(this.courseCode)
+
+            const response =
+                fetch(`${materials_url}/${this.classSection}/${this.courseCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no course found in db
+                        this.searchError = data.message;
+                    } else {
+                        this.materials = data.data;
+                        console.log(this.materials);
+                        for (let material of this.materials) {
+                            if (!(this.material_chapters.includes(material.material_chapter))) {
+                                this.material_chapters.push(material.material_chapter)
+                            }
+                        }
+                        this.material_chapters.sort();
+                        console.log(this.material_chapters);
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.searchError + error);
+                });
+        },
     },
     created: function () {
         // on Vue instance created, load the course list
         this.getAllCourses();
+        this.getMaterials();
     }
 
 });
