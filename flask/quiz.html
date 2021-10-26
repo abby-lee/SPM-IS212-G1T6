@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Portal</title>
+
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../css/styles.css" rel="stylesheet" />
+
+  <!-- Vue JS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+
+</head>
+
+<body>
+  <div id = "app">
+    <section class="wow fadeInUp mt-2"> 
+      <div style="display:center" class="container"> <!-- container START-->
+        <div> 
+          <nav class="navbar" style="margin-left: 0;">
+            <div class="container-fluid">
+              <span class="navbar-brand mb-0 h1"> QuizID: {{ getQuizInfo() }}</span>
+            </div>
+          </nav>
+
+          <br>
+          <div class="modal-body">
+          <form method="POST" action=''>
+            <h1>{{ quizquestions.questionid }}</h1>
+            <h1>{{ quizquestions.questiontext }}</h1>
+            <div v-for="option in quizquestions">
+              <input type="radio" v-for="option in (quizquestions.questionoptions | split(','))">
+            </div>
+            <style>
+              button{
+                font-size:40px;
+                background-color:rgb(88, 88, 204);
+                color:white;
+              }
+              #count{
+                margin-left:20px;
+                font-size:30px;
+                color:black;
+              }
+            </style>
+            <span id="count">{{quizzes.time}}</span> seconds
+            <br>
+            <button onclick="start()">START QUIZ</button>
+            <script>
+              function startTimer(){
+              var counter = 5;
+              setInterval(function() {
+                counter--;
+                if (counter >= 0) {
+                  span = document.getElementById("count");
+                  span.innerHTML = counter;
+                }
+                if (counter === 0) {
+                    alert('sorry, out of time');
+                    clearInterval(counter);
+                }
+              }, 1000);
+            }
+            function start() {
+                document.getElementById("count").style="color:blue;";
+                startTimer();
+            };
+          </script>
+          </div>
+        </div>  
+      </div>
+                <div>
+              </div>
+            </div>
+          </form>
+<
+      <!-- Button trigger modal -->
+      
+    <br>
+
+    <!-- Table of Questions -->
+    <div class="container" style="display:center">
+      <div class="row">
+          <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Question ID</th>
+                    <th scope="col">Question</th>
+                    <th scope="col">Question Type</th>
+                    <th scope="col">Question Options</th>
+                    <th scope="col">Question Answer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="question in questions">
+                    <td>{{ quizquestions.questionid }}</td>
+                    <td>{{ quizquestions.questiontext }}</td>
+                    <td>{{ quizquestions.questiontype }}</td>
+                    <td>{{ quizquestions.questionoptions }}</td>
+                    <td>{{ quizquestions.answertext }}</td>
+                </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+    <!-- End Table -->
+    
+    </section>
+  </div>
+
+  <script type="text/javascript" src="../js/trainer.js"></script>
+  <!-- <script type="text/javascript" src="quiz.js"></script> -->
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+</body>
+</html>

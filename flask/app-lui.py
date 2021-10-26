@@ -258,13 +258,14 @@ def getQuizForm(course_code, class_section, quizid):
         for qns in qid:
         # type = request.args.get('questiontype', qns.questiontype)
         # question = request.args.get('questiontext', qns.questiontype)
+            choices = []
             options = request.args.get('questionoptions', qns.questionoptions)
             choices = options.split(',')
             if choices.count() > 2:   #mcq
                 RadioField(qns.questiontext, choices=choices, validators=qns.answertext)
             else:   #true/false
                 RadioField(Quizquestions.questiontext, choices=['True', 'False'], validators=Quizquestions.answertext)
-        return render_template('trainer-question.html', form=form, choices=choices)
+        return render_template('quiz.html', form=form, choices=choices)
 
 
         # validators=CorrectAnswer(Quizquestions.answertext))

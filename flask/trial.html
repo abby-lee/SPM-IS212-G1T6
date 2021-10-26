@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+   <title> Quiz</title>
+   <!-- <link rel="stylesheet" href="quizStyle.css"> -->
+   <!-- <script src="quizScript.js"></script> -->
+</head>
+
+<body style="text-align:center; padding-top: 10%;">
+
+    <div id="frame001">
+        <h2> Quiz </h2>
+        <p id="userQuestion"> Question: <text id="number001"> 0 </text></p>
+        <p id="userScore"> Score: <text id="score001"> 0 </text> </p>
+        <div id="countDown"> </div>
+
+        <br>
+        <div id="disappear001"><button class="beginButton" @click="begin001(), startTimer();"> Begin Quiz</button>
+        </div>
+    </div>
+    <script>
+        // document.getElementById("countDown").addEventListener("click", function() {
+            // var secondsDown = 60;
+            // var timeIntervalUp = setInterval(function() {
+            //     startTimer()
+            // }, 1000);
+            
+            // var timeIntervalUp;
+            // function startTimer() {
+            // timeIntervalUp = setInterval(function() {
+            //     countTimer()
+            // }, 1000);
+            // }
+
+            // function countTimer() {
+            //     document.getElementById("countDown").innerHTML = "Time Remaining: " + secondsDown;
+            //     secondsDown--;
+
+            //     if (secondsDown == 0) {
+            //         clearInterval(timeIntervalUp);
+            //         endTimer();
+            //         reload();
+            //     }
+            // }
+        // });
+        document.getElementById("countDown").addEventListener("click", function startTimer() {
+        var timeleft = 15;
+
+        var downloadTimer = setInterval(function function1() {
+            document.getElementById("countdown").innerHTML = timeleft +
+                " " + "seconds remaining";
+
+            timeleft -= 1;
+            if (timeleft <= 0) {
+                clearInterval(downloadTimer);
+                document.getElementById("countdown").innerHTML = "Time is up!"
+            }
+        }, 1000);
+
+        console.log(countdown);
+    });
+    </script>
+</body>
+
+</html>
