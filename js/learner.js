@@ -24,7 +24,7 @@ var app = new Vue({
 
         "materials": [],
         "material_chapters": [],
-        chapter_completed: 1,
+        chapter_completed: 2,
 
         "quizzes": []
     },

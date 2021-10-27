@@ -62,7 +62,7 @@
                         </tbody>
                     </table>
 
-                    <!-- Quiz -->
+                    <!-- Progress Quiz -->
                     <table class="table"  v-if = "mat_chap <= chapter_completed + 1">
                         <thead>
                             <tr>
@@ -76,8 +76,7 @@
                             <tr v-for="quiz in quizzes" v-if ="quiz.quizid == mat_chap">
                                 <td>Quiz {{ quiz.quizid }}</td>
                                 <td>{{ quiz.time }}</td>
-                                <td v-if = "quiz.graded == 'F'">Ungraded</td>
-                                <td v-else>Graded</td>
+                                <td>Ungraded</td>
                                 <td> 
                                     <a class="btn btn-outline-primary" href="learner-quiz.html" role="button" @click="storeQuizForm(quiz.quizid)">Link</a>
                                 </td>
@@ -86,6 +85,34 @@
                     </table>
 
                 </template>
+
+                <!-- Final Quiz -->
+                <template v-if ="chapter_completed == material_chapters[material_chapters.length-1]">
+
+                    <h1>Final Quiz</h1>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Quiz</th>
+                                <th scope="col">Duration (min)</th>
+                                <th scope="col">Graded</th>
+                                <th scope="col">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Final Quiz</td>
+                                <td>{{ quizzes[quizzes.length-1].time }}</td>
+                                <td>Graded</td>
+                                <td> 
+                                    <a class="btn btn-outline-primary" href="learner-quiz.html" role="button" @click="storeQuizForm(quizzes[quizzes.length-1].quizid)">Link</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </template>
+
             </div>
         </div>
         <!-- End of Showing Unlocked Chapters -->
