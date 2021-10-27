@@ -249,9 +249,95 @@ def eligible_courses(learners_eid):
             "data": {
                 "learner_eid": learners_eid
             },
-            "message": "No eligible courses found."
+            "message": "No eligible courses."
         }
     )
+
+#get learners completed courses 
+@app.route("/<int:learners_eid>/completed")
+def completed_courses(learners_eid):
+    learner = Learners.query.filter_by(learners_eid=learners_eid).first()
+    if learner:
+        completed_courses = request.args.get('courses_completed', learner.courses_completed)        
+        if completed_courses == None:
+                return jsonify(
+                    {
+                        "code": 404,
+                        "data": {
+                            "learner_eid": learners_eid
+                        },
+                        "message": "No completed courses."
+                    }
+                )
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "learner_eid": learners_eid,
+                    "courses_completed": completed_courses
+                }
+            }
+        )
+
+#get course prerequisites 
+@app.route("/courses/<int:course_code>/prerequisites")
+def course_prerequisites(course_code):
+    course = Courses.query.filter_by(course_code=course_code).first()
+    if course:
+        prerequisites_list = request.args.get('prerequisites', course.prerequisites)        
+        if prerequisites_list == None:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "course_code": course_code
+                    },
+                    "message": "No prerequisites"
+                }
+            )
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "course_code": course_code,
+                    "prerequisites": prerequisites_list
+                }
+            }
+        )
+
+#self enrol - add learner to course
+@app.route("/selfenrol", methods=['POST'])
+@cross_origin()
+def self_enrol():
+    data = request.get_json()
+    if not all(key in data.keys() for
+               key in ('learners_eid', 'course_code',
+                       'class_section', 'chapter_completed')):
+        return jsonify(
+            {
+            "message": "Incorrect JSON object provided."
+            }
+        ), 500
+    learner = Progress(**data)
+    try:
+        db.session.add(learner)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "message": "Learner has been successfully added to course",
+                "data": [learner.to_dict()]
+            }
+        ), 200
+    except SQLAlchemyError as e:
+        print(str(e))
+        db.session.rollback()
+        return jsonify(
+            {
+                "code": 500,
+                "message": "Unable to add learner to course."
+            }
+        ), 500
 
 ## NEED CHANGE ##
 # get learners by course 
