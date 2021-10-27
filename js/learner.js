@@ -1,5 +1,6 @@
 var get_all_URL = "http://localhost:5000/courses";
 var materials_url = "http://localhost:5000/materials";
+var quiz_url = "http://localhost:5000/quizzes";
 
 
 var app = new Vue({
@@ -23,7 +24,9 @@ var app = new Vue({
 
         "materials": [],
         "material_chapters": [],
-        chapter_completed: 1
+        chapter_completed: 1,
+
+        "quizzes": []
     },
     methods: {
         getAllCourses: function () {
@@ -111,11 +114,45 @@ var app = new Vue({
                     console.log(this.searchError + error);
                 });
         },
+        getQuizzes: function () { 
+            this.courseCode = 1003;
+            this.classSection = "G2"
+
+            console.log(this.courseCode)
+
+            const response =
+                fetch(`${quiz_url}/${this.classSection}/${this.courseCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no course found in db
+                        this.searchError = data.message;
+                    } else {
+                        this.quizzes = data.data;
+                        console.log(this.quizzes);
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.searchError + error);
+                });
+        },
+        storeQuizForm: function(quizid) {
+            localStorage.quizid = quizid
+        },
+        getQuizForm: function() {
+            console.log(localStorage.getItem("quizid"))
+            return localStorage.getItem("quizid")
+        },
     },
     created: function () {
         // on Vue instance created, load the course list
-        this.getAllCourses();
+        // this.getAllCourses();
         this.getMaterials();
+        this.getQuizzes();
+        this.getQuizForm();
     }
 
 });

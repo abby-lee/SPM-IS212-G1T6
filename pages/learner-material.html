@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trainers Portal </title>
+    <title>Learners Portal </title>
 
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
     <!-- Bootstrap icons-->
@@ -41,6 +41,8 @@
                     <h1  v-if = "mat_chap <= chapter_completed + 1">
                         Lesson {{ mat_chap }}
                     </h1>
+
+                    <!-- Materials -->
                     <table class="table"  v-if = "mat_chap <= chapter_completed + 1">
                         <thead>
                             <tr>
@@ -59,6 +61,30 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <!-- Quiz -->
+                    <table class="table"  v-if = "mat_chap <= chapter_completed + 1">
+                        <thead>
+                            <tr>
+                                <th scope="col">Quiz Number</th>
+                                <th scope="col">Duration (min)</th>
+                                <th scope="col">Graded</th>
+                                <th scope="col">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="quiz in quizzes" v-if ="quiz.quizid == mat_chap">
+                                <td>Quiz {{ quiz.quizid }}</td>
+                                <td>{{ quiz.time }}</td>
+                                <td v-if = "quiz.graded == 'F'">Ungraded</td>
+                                <td v-else>Graded</td>
+                                <td> 
+                                    <a class="btn btn-outline-primary" href="learner-quiz.html" role="button" @click="storeQuizForm(quiz.quizid)">Link</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                 </template>
             </div>
         </div>
