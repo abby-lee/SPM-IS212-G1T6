@@ -157,9 +157,9 @@ var app = new Vue({
         // },
 
         getQuizQuestions: function () { 
-            // this.course_code = 1008;
-            // this.class_section = "G1";
-            // this.quizid = 3
+            this.course_code = 1008;
+            this.class_section = "G1";
+            this.quizid = 3
             // this.course_code = localStorage.getItem("course_code");
             // this.class_section = localStorage.getItem("class_section");
             // this.quizid = localStorage.getItem("quizid");
