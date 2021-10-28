@@ -48,12 +48,14 @@
                 color:black;
               }
             </style>
-            <span id="count">{{quizzes.time}}</span> seconds
+            <!-- this part -->
+            <span id="count">Time: {{quiz.time}}</span> minutes
             <br>
             <button onclick="start()">START QUIZ</button>
             <script>
               function startTimer(){
-              var counter = 5;
+                // this part
+              var counter = quiz.time;
               setInterval(function() {
                 counter--;
                 if (counter >= 0) {

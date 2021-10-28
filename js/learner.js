@@ -139,6 +139,33 @@ var app = new Vue({
                     console.log(this.searchError + error);
                 });
         },
+        getQuizForm: function () { 
+            this.courseCode = 1008;
+            this.classSection = "G1"
+            this.questionnid =
+
+            console.log(this.courseCode)
+
+            const response =
+                fetch(`${quiz_url}/${this.classSection}/${this.courseCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no course found in db
+                        this.searchError = data.message;
+                    } else {
+                        this.quizzes = data.data;
+                        console.log(this.quizzes);
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.searchError + error);
+                });
+        },
+
         storeQuizForm: function(quizid) {
             localStorage.quizid = quizid
         },

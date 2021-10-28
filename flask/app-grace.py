@@ -230,10 +230,10 @@ def getQuizzes(course_code, class_section):
 # 2 Get all questions by section, course and quiz id
 @app.route("/<int:course_code>/<string:class_section>/<int:quizid>")
 def getQuizQuestions(course_code, class_section, quizid):
-    questions = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
-    if questions:
+    quizquestions = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
+    if quizquestions:
         return jsonify({
-            "data": [question.to_dict() for question in questions]
+            "data": [question.to_dict() for question in quizquestions]
         }),200
     else:
         return jsonify({

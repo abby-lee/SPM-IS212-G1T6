@@ -27,9 +27,20 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         </div>
     </nav>
-    
-    <h1>Quiz {{ getQuizForm() }}</h1>
-
+    <!-- <div v-for="quiz in quizzes"> -->
+      <h1>Quiz {{ getQuizForm() }}</h1>
+      <h1>Quiz {{ quiz.quizid }}</h1>
+      <form methods="POST" actions="/">
+        <!-- each question -->
+        <p v-for="(question, index) in quizquestions">Question {{ index }}: {{ question.questionid }}
+          <!-- questions -->
+          <ol> 
+            <input type="radio" v-for="option in question.questionoptions"> {{ question.option }}
+          </ol>
+        <!-- submit button -->
+        <button class="btn btn-outline-primary" type="submit" @click="storeQuizForm(quiz.quizid)">Submit</button>
+      </form>
+    </div>
   </div>
 
   <script type="text/javascript" src="../js/learner.js"></script>
