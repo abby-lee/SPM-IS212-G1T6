@@ -36,9 +36,6 @@ var app = new Vue({
         // questiontype:"",
         // questionoptions:"",
         // answertext:"",
-        course_code = 1008,
-        class_section = "G1",
-        quizid = 3,
     },
     methods: {
         // getAllCourses: function () {
