@@ -211,7 +211,7 @@ class Materials(db.Model):
 db.create_all()
 
 # 1 Get all quizzes by section and course code
-@app.route("/<int:course_code>/<string:class_section>/quizzes")
+@app.route("/quizzes/<string:class_section>/<int:course_code>")
 def getQuizzes(course_code, class_section):
     quizzes = Quizzes.query.filter_by(course_code=course_code, class_section=class_section).all()
     if quizzes:
@@ -228,7 +228,7 @@ def getQuizzes(course_code, class_section):
     })
 
 # 2 Get all questions by section, course and quiz id
-@app.route("/<int:course_code>/<string:class_section>/<int:quizid>")
+@app.route("/quizzes/<string:class_section>/<int:course_code>/<int:quizid>")
 def getQuizQuestions(course_code, class_section, quizid):
     quizquestions = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
     if quizquestions:

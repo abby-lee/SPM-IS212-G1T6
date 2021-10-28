@@ -18,7 +18,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
 
 </head>
-
+<style>
+    button{
+      font-size:40px;
+      background-color:rgb(88, 88, 204);
+      color:white;
+    }
+    #count{
+      margin-left:20px;
+      font-size:30px;
+      color:black;
+    }
+</style>
 <body>
 
     <div id="app">
@@ -106,7 +117,30 @@
                                 <td>{{ quizzes[quizzes.length-1].time }}</td>
                                 <td>Graded</td>
                                 <td> 
-                                    <a class="btn btn-outline-primary" href="learner-quiz.html" role="button" @click="storeQuizForm(quizzes[quizzes.length-1].quizid)">Link</a>
+                                    <!-- <a class="btn btn-outline-primary" href="learner-quiz.html" role="button" @click="storeQuizForm(quizzes[quizzes.length-1].quizid)">Link</a> -->
+                                    <button class="btn btn-outline-primary" href="learner-quiz.html" @click={() => [storeQuizForm(quizzes[quizzes.length-1].quizid), startTimer()]}>Take Quiz</a>
+
+                                    {(event) => [function1(), function2()]}
+                                    <script>
+                                        function startTimer(){
+                                          var counter = quiz.time + 0.5;
+                                          setInterval(function() {
+                                            counter--;
+                                            if (counter >= 0) {
+                                              span = document.getElementById("count");
+                                              span.innerHTML = counter;
+                                            }
+                                            if (counter === 0) {
+                                                alert('sorry, out of time');
+                                                clearInterval(counter);
+                                            }
+                                          }, 1000);
+                                        }
+                                        function start() {
+                                            document.getElementById("count").style="color:blue;";
+                                            startTimer();
+                                        };
+                                    </script>
                                 </td>
                             </tr>
                         </tbody>
