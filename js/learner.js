@@ -36,6 +36,9 @@ var app = new Vue({
         // questiontype:"",
         // questionoptions:"",
         // answertext:"",
+        course_code: 0, 
+        class_section: "",
+        quizid: 0
     },
     methods: {
         // getAllCourses: function () {
@@ -154,12 +157,12 @@ var app = new Vue({
         // },
 
         getQuizQuestions: function () { 
-            this.course_code = 1008;
-            this.class_section = "G1";
-            this.quizid = 3
-            // this.course_code = localStorage.getItem("course_code");
-            // this.class_section = localStorage.getItem("class_section");
-            // this.quizid = localStorage.getItem("quizid");
+            // this.course_code = 1008;
+            // this.class_section = "G1";
+            // this.quizid = 3
+            this.course_code = localStorage.getItem("course_code");
+            this.class_section = localStorage.getItem("class_section");
+            this.quizid = localStorage.getItem("quizid");
 
             console.log(this.class_section)
 
@@ -181,6 +184,52 @@ var app = new Vue({
                     console.log(this.searchError + error);
                 });
         },
+        // startTimer: function (){
+        //     this.course_code = 1008;
+        //     this.class_section = "G1";
+        //     this.quizid = 3;
+        //     this.time = 10
+
+        //     console.log(this.time)
+            
+        //     var counter = quiz.time + 0.5;
+        //     setInterval(function() {
+        //     counter--;
+        //     if (counter >= 0) {
+        //         span = document.getElementById("count");
+        //         span.innerHTML = counter;
+        //     }
+        //     if (counter === 0) {
+        //         alert('sorry, out of time');
+        //         clearInterval(counter);
+        //     }
+        //     }, 1000);
+
+        //     const response =
+        //     fetch(`${quizzes_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log(response);
+        //         if (data.code === 404) {
+        //             // no course found in db
+        //             this.searchError = data.message;
+        //         } else {
+        //             this.time = localStorage.getItem('time')
+        //             var counter = quiz.time + 0.5;
+
+        //         }
+        //     })
+        //     .catch(error => {
+        //         // Errors when calling the service; such as network error, service offline, etc
+        //         console.log(this.searchError + error);
+        //     });
+
+
+        // },
+        // start: function() {
+        //     document.getElementById("count").style="color:blue;";
+        //     startTimer();
+        // },
         // getMarks: function () {
 
         // },
@@ -205,7 +254,7 @@ var app = new Vue({
             // this.getAllCourses();
             // this.getMaterials();
             // this.getQuizzes();
-            this.getQuizForm();
+            // this.getQuizForm();
             this.getQuizQuestions();
             // this.getMarks();
             this.searchError = "";
@@ -217,9 +266,9 @@ var app = new Vue({
         // this.getAllCourses();
         // this.getMaterials();
         // this.getQuizzes();
-        this.getQuizForm();
+        // this.getQuizForm();
         this.getQuizQuestions();
-        this.getQuizInfo();
+        // this.getQuizInfo();
     }
 
 });

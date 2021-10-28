@@ -117,30 +117,7 @@
                                 <td>{{ quizzes[quizzes.length-1].time }}</td>
                                 <td>Graded</td>
                                 <td> 
-                                    <!-- <a class="btn btn-outline-primary" href="learner-quiz.html" role="button" @click="storeQuizForm(quizzes[quizzes.length-1].quizid)">Link</a> -->
-                                    <button class="btn btn-outline-primary" href="learner-quiz.html" @click={() => [storeQuizForm(quizzes[quizzes.length-1].quizid), startTimer()]}>Take Quiz</a>
-
-                                    {(event) => [function1(), function2()]}
-                                    <script>
-                                        function startTimer(){
-                                          var counter = quiz.time + 0.5;
-                                          setInterval(function() {
-                                            counter--;
-                                            if (counter >= 0) {
-                                              span = document.getElementById("count");
-                                              span.innerHTML = counter;
-                                            }
-                                            if (counter === 0) {
-                                                alert('sorry, out of time');
-                                                clearInterval(counter);
-                                            }
-                                          }, 1000);
-                                        }
-                                        function start() {
-                                            document.getElementById("count").style="color:blue;";
-                                            startTimer();
-                                        };
-                                    </script>
+                                    <button class="btn btn-outline-primary" href="learner-quiz.html" @click="storeQuizForm(quizzes[quizzes.length-1].quizid)">Link</a>
                                 </td>
                             </tr>
                         </tbody>
