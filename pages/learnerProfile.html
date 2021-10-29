@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrators Portal </title>
 
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="css/styles.css" rel="stylesheet" />
+    <link href="../css/styles.css" rel="stylesheet" />
 
   <!-- Vue JS-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
@@ -18,13 +18,67 @@
 </head>
 
 <body>
-    <div id = "app">
-        <div class="container">
-            <div class="row">
-                <H1> {{learner.learners_name}}</H1>
-                <h3> {{learner.learners_eid}} </h3>
-               
+    <div id = "app" >
+        {{getLearnerInfo()}}
+        
+        {{getEligibleCourses()}}
+        <!-- <button type="button" class="btn-btn-primary" @click="getEligibleCourses()"> Test getEligibleCourses</button> -->
+        <div class="container" style="margin:30px;">
+            <div id="learnerInfo"></div>
+            
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Assign Course</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                    <!-- Default checkbox -->
+                    <div class="form-check" v-for="course in eligibleCourses">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
+                        <label class="form-check-label" for="flexCheckDefault">
+                            {{course.course_code}}:{{course.course_title}}
+                        </label>
+                    </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <div class="justify-content-left;">
+                            <div class="text-success" v-if="courseAssigned">
+                            {{ statusMessage }} <br>
+                            </div>
+                        </div>
+                        
+                        <div class="justify-content-left;">
+                            <div class="text-danger" v-if="msg != ''">
+                            {{ msg }} <br>
+                            </div>
+                        </div>
+            
+                        <div class="justify-content-left;">
+                            <div class="text-danger" v-if="assignCourseError!=''">
+                            {{ assignCourseError }}
+                            </div>
+                        </div> 
+
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        
+                        <button @click="assignCourse()" class="btn btn-primary" v-on:submit.prevent="onSubmit"  >Assign Course</button>
+                    
+                    </div>
+                    
+                    </div>
+                    
+                </div>
             </div>
+              
         </div>
     </div>
 

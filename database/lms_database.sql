@@ -183,7 +183,7 @@ INSERT INTO `learners` (`learners_eid`, `learners_name`, `learners_email`, `lear
 (7, 'Jacob Tok', 'Jacob.Tok@gmail.com', "Bachelor's Degree in Computer Engineering",'Foundations of Printer Repairs'),
 (8, 'Yong Hao Koh', 'Yong Hao.Koh@gmail.com', "Bachelor's Degree in Electrical Engineering with a Minor in Field Studies",''),
 (9, 'Jones Low', 'Jones.Low@gmail.com',  "Bachelor's Degree in Electrical Engineering", 'Foundations of how Copiers work'),	
-(10, 'Linda	Teng', 'Linda.Teng@gmail.com', "Bachelor's Degree in Engineering Technology",'');
+(10, 'Linda Teng', 'Linda.Teng@gmail.com', "Bachelor's Degree in Engineering Technology",'');
 
 -- --------------------------------------------------------
 
