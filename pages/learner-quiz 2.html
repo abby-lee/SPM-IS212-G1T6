@@ -28,24 +28,25 @@
         </div>
     </nav>
     <!-- <div v-for="quiz in quizzes"> -->
-      <!-- <h1>Quiz {{ getQuizQuestions() }}</h1> -->
+      <h1>Quiz {{ getQuizQuestions() }}</h1>
       <!-- <h1>Quiz {{ quiz.quizid }}</h1> -->
-      <form methods="POST" actions="/">
+      <form methods="POST" actions="/learner-submitquiz.php">
         <!-- each question -->
         <div v-for="question in quizquestions">
           <h3>{{ question.questiontext }}</h3>
+          <div v-for="question in quizquestions" class="radio boxes" required></div>
           <!-- options -->
-          <div v-for="option in (question.questionoptions.split(','))">
-            <input type="radio" value="" >{{ option }}
-          </div>
-        </div>
+          <div v-for="option in (question.questionoptions.split(','))" >
+            <input type="radio" id="option" name="question.questionid"> {{option}}
+        </div><br>
+       </div><br>
         <!-- submit button -->
-        <button class="btn btn-outline-primary" type="submit" name='submitForm' @click="storeQuizForm(quiz.quizid)">Submit</button>
+        <button class="btn btn-outline-primary" type="submit" @click="storeQuizForm(quiz.quizid)">Submit</button>      
       </form>
     </div>
   </div>
 
-  <script type="text/javascript" src="../js/learner.js"></script>
+  <script type="text/javascript" src="../js/learner2.js"></script>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
