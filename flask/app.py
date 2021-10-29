@@ -372,7 +372,7 @@ def add_learner():
         return jsonify({
             "message": "Incorrect JSON object provided."
         }), 500
-    learner = Enrols(**data)
+    learner = Progress(**data)
     print(learner)
     try:
         db.session.add(learner)
@@ -390,7 +390,7 @@ def add_learner():
 # remove learner from course
 @app.route("/enrols/<int:course_code>/<string:learners_eid>", methods=['DELETE'])
 def delete_book(course_code, learners_eid):
-    learnertoremove = Enrols.query.filter_by(course_code=course_code , learners_eid=learners_eid).first()
+    learnertoremove = Progress.query.filter_by(course_code=course_code , learners_eid=learners_eid).first()
     if learnertoremove:
         db.session.delete(learnertoremove)
         db.session.commit()
@@ -535,13 +535,13 @@ def get_quizzes(class_section, course_code):
     ), 200
 
 #get quiz questions
-@app.route("/questions/<string:class_section>/<int:course_code>/<int:quizid>")
+@app.route("/quizquestions/<string:class_section>/<int:course_code>/<int:quizid>")
 def get_questions(class_section, course_code, quizid):
-    question_list = Quizquestions.query.filter_by(class_section=class_section, course_code=course_code, quizid=quizid).all()
+    quizquestions = Quizquestions.query.filter_by(class_section=class_section, course_code=course_code, quizid=quizid).all()
     return jsonify(
         {
             "data": [question.to_dict()
-                     for question in question_list]
+                     for question in quizquestions]
         }
     ), 200
 

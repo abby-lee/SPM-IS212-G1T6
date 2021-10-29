@@ -211,24 +211,24 @@ class Materials(db.Model):
 db.create_all()
 
 # 1 Get all quizzes by section and course code
-@app.route("/quizzes/<string:class_section>/<int:course_code>")
-def getQuizzes(course_code, class_section):
-    quizzes = Quizzes.query.filter_by(course_code=course_code, class_section=class_section).all()
-    if quizzes:
-        return jsonify({
-            "data": [quiz.to_dict() for quiz in quizzes]
-        }), 200
-    return jsonify({
-        "code": 404,
-        "data": {
-            "course_code": course_code,
-            "class_section": class_section,
-        },
-        "message": "No quizzes created yet."
-    })
+# @app.route("/quizzes/<string:class_section>/<int:course_code>")
+# def getQuizzes(course_code, class_section):
+#     quizzes = Quizzes.query.filter_by(course_code=course_code, class_section=class_section).all()
+#     if quizzes:
+#         return jsonify({
+#             "data": [quiz.to_dict() for quiz in quizzes]
+#         }), 200
+#     return jsonify({
+#         "code": 404,
+#         "data": {
+#             "course_code": course_code,
+#             "class_section": class_section,
+#         },
+#         "message": "No quizzes created yet."
+#     })
 
 # 2 Get all questions by section, course and quiz id
-@app.route("/quizzes/<string:class_section>/<int:course_code>/<int:quizid>")
+@app.route("/quizquestions/<string:class_section>/<int:course_code>/<int:quizid>")
 def getQuizQuestions(course_code, class_section, quizid):
     quizquestions = Quizquestions.query.filter_by(course_code=course_code, class_section=class_section, quizid=quizid).all()
     if quizquestions:

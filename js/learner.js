@@ -29,7 +29,11 @@ var app = new Vue({
         "quizquestions":[],
         course_code: 0, 
         class_section: "",
-        quizid: 0
+        quizid: 0,
+        questiontext: "",
+        questionoptions: "",
+        answertext: "",
+        graded: "",
     },
     methods: {
 
@@ -44,7 +48,7 @@ var app = new Vue({
             console.log(this.class_section)
 
             const response =
-                fetch(`${quizzes_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
+                fetch(`${quizquestions_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(response);
@@ -61,6 +65,56 @@ var app = new Vue({
                     console.log(this.searchError + error);
                 });
         },
+        checkAnswers: function(){
+            this.course_code = 1008;
+            this.class_section = "G1";
+            this.quizid = 3
+            console.log(this.quizid)
+
+            const response =
+                fetch(`${quizquestions_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no course found in db
+                        this.searchError = data.message;
+                    } else {
+                        this.quizquestions = data.data;
+                        console.log(this.quizquestions);
+
+                        var marks = 0;
+                        var form = document.getElementById(this.quizid),
+                        //for each question
+                        qnNum;
+                        for (qnNum = 0; qnNum < quizquestions.length; qnNum++) {
+                            qn = form[question.questiontext],
+                            ansNum;
+                            //check which option is chosen
+                            for (ansNum = 0; ansNum < qn.length; ansNum++) {
+                                if (qn[ansNum].checked) {
+
+                                    // ????????????????????
+                                    var option= parseInt(qn[ansNum].value);
+                                }
+                            }
+                            this.answertext = localStorage.getItem("answertext")
+                            if(option==this.answertext){ 
+                                marks += 1;
+                                document.writeln("Your answer is correct!"); 
+                            }
+                            else{
+                                document.writeln("The correct answer is '" + this.answertext + "'.");
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, service offline, etc
+                    console.log(this.searchError + error);
+                });
+        },
+
         // startTimer: function (){
         //     this.course_code = 1008;
         //     this.class_section = "G1";
@@ -133,6 +187,7 @@ var app = new Vue({
             // this.getQuizzes();
             this.getQuizForm();
             this.getQuizQuestions();
+            this.checkAnswers();
             // this.getMarks();
             this.searchError = "";
             this.searchStr = "";
@@ -145,6 +200,7 @@ var app = new Vue({
         // this.getQuizzes();
         this.getQuizForm();
         this.getQuizQuestions();
+        this.checkAnswers();
         // this.getQuizInfo();
     }
 
