@@ -250,6 +250,11 @@ CREATE TABLE IF NOT EXISTS `quizquestions` (
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+INSERT INTO quizquestions (questionid, course_code, class_section, quizid, questiontext, questiontype, questionoptions, answertext) VALUES
+(1, 1008, 'G1', '3', '10 + 10 = 40', 'TF', 'True,False', 'False'),
+(2, 1008, 'G1', '3', '3 x 4 = ?', 'mcq', '4,8,6,12', '12'),
+(3, 1008, 'G1', '3', '10 - 3 = ?', 'mcq', '10,3,7,0', '7');
+
 -- --------------------------------------------------------
 
 --

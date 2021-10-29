@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trainers Portal </title>
+    <title>Learners Portal </title>
 
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
     <!-- Bootstrap icons-->
@@ -27,9 +27,23 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         </div>
     </nav>
-    
-    <h1>Quiz {{ getQuizForm() }}</h1>
-
+    <!-- <div v-for="quiz in quizzes"> -->
+    <h1>Quiz {{ getQuizQuestions() }}</h1>
+      <!-- <h1>Quiz {{ quiz.quizid }}</h1> -->
+      <form methods="POST" actions="/">
+        <!-- each question -->
+        <div v-for="question in quizquestions">
+          <h3>{{ question.questiontext }}</h3>
+          <div v-for="question in quizquestions"></div>
+          <!-- options -->
+          <div v-for="option in (question.questionoptions.split(','))" >
+            <input type="radio" id="option" name="question.questiontext"> {{option}}
+        </div><br>
+       </div><br>
+        <!-- submit button -->
+        <button class="btn btn-outline-primary" type="submit" @click="storeQuizForm(quiz.quizid)">Submit</button>
+      </form>
+    </div>
   </div>
 
   <script type="text/javascript" src="../js/learner.js"></script>
