@@ -2,6 +2,7 @@ var get_all_URL = "http://localhost:5000/courses";
 var materials_url = "http://localhost:5000/materials";
 var quiz_url = "http://localhost:5000/quizzes";
 
+
 var app = new Vue({
     // binds the new Vue object to the HTML element with id="app".
     el: "#app",
@@ -31,7 +32,8 @@ var app = new Vue({
         chapter_completed: 2,
 
         "eligibleCourses": [],
-        "completedCourses": [],
+        "completedCoursesArr": [],
+        
 
         learners_eid: 0,        
 
@@ -57,8 +59,8 @@ var app = new Vue({
                         this.message = data.message;
                         console.log(this.message);
                     } else {
-                        console.log(data.data);
-                        this.eligibleCourses = data.data;
+                        console.log(data.data.eligible_courses);
+                        this.eligibleCourses = data.data.eligible_courses;
                         console.log(this.eligibleCourses);
                     }
                 })
@@ -79,9 +81,14 @@ var app = new Vue({
                         this.message = data.message;
                         console.log(this.message);
                     } else {
-                        console.log(data.data);
-                        this.completedCourses = data.data;
-                        console.log(this.completedCourses);
+                        console.log(data.data.courses_completed);
+                        this.completedCourses = data.data.courses_completed;
+                        if (this.completedCourses.includes(',')) {
+                            completedCoursesArr = this.completedCourses.split(',');
+                            console.log(completedCoursesArr);
+                        } else {
+                            completedCoursesArr.push(this.completedCourses);
+                        }
                     }
                 })
                 .catch(error => {
