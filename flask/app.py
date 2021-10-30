@@ -540,6 +540,7 @@ def get_questions(class_section, course_code, quizid):
     quizquestions = Quizquestions.query.filter_by(class_section=class_section, course_code=course_code, quizid=quizid).all()
     return jsonify(
         {
+            "code": 200,
             "data": [question.to_dict()
                      for question in quizquestions]
         }

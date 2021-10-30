@@ -26,14 +26,19 @@ var app = new Vue({
         "material_chapters": [],
         chapter_completed: 2,
 
+        // "quizzes": [],
+        // quizid: 0,
+        // time:0,
+        // graded:"",
+
         "quizquestions":[],
+        // questiontext:"",
+        // questiontype:"",
+        // questionoptions:"",
+        // answertext:"",
         course_code: 0, 
         class_section: "",
-        quizid: 0,
-        // questiontext: "",
-        // questionoptions: "",
-        // answertext: "",
-        // graded: "",
+        quizid: 0
     },
     methods: {
         // getAllCourses: function () {
@@ -123,45 +128,46 @@ var app = new Vue({
         //             console.log(this.searchError + error);
         //         });
         // },
-        getQuizzes: function () { 
-            // this.course_code = localStorage.getItem("course_code");
-            // this.class_section = localStorage.getItem("class_section")
-            this.course_code = 1008;
-            this.class_section = "G1"
+        // getQuizzes: function () { 
+        //     // this.course_code = localStorage.getItem("course_code");
+        //     // this.class_section = localStorage.getItem("class_section")
+        //     this.course_code = 1008;
+        //     this.class_section = "G1"
 
-            console.log(this.course_code)
+        //     console.log(this.course_code)
 
-            const response =
-                fetch(`${quizzes_url}/${this.class_section}/${this.course_code}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no course found in db
-                        this.searchError = data.message;
-                    } else {
-                        this.quizzes = data.data;
-                        console.log(this.quizzes);
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    console.log(this.searchError + error);
-                });
-        },
+        //     const response =
+        //         fetch(`${quizzes_url}/${this.class_section}/${this.course_code}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             console.log(response);
+        //             if (data.code === 404) {
+        //                 // no course found in db
+        //                 this.searchError = data.message;
+        //             } else {
+        //                 this.quizzes = data.data;
+        //                 console.log(this.quizzes);
+        //             }
+        //         })
+        //         .catch(error => {
+        //             // Errors when calling the service; such as network error, 
+        //             // service offline, etc
+        //             console.log(this.searchError + error);
+        //         });
+        // },
+
         getQuizQuestions: function () { 
-            this.course_code = 1008;
-            this.class_section = "G1";
-            this.quizid = 3
-            // this.course_code = localStorage.getItem("course_code");
-            // this.class_section = localStorage.getItem("class_section");
-            // this.quizid = localStorage.getItem("quizid");
+            // this.course_code = 1008;
+            // this.class_section = "G1";
+            // this.quizid = 3
+            this.course_code = localStorage.getItem("course_code");
+            this.class_section = localStorage.getItem("class_section");
+            this.quizid = localStorage.getItem("quizid");
 
             console.log(this.class_section)
 
             const response =
-                fetch(`${quizquestions_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
+                fetch(`${quizzes_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(response);
@@ -178,61 +184,6 @@ var app = new Vue({
                     console.log(this.searchError + error);
                 });
         },
-        // checkAnswers: function(){
-        //     this.course_code = 1008;
-        //     this.class_section = "G1";
-        //     this.quizid = 3
-        //     console.log(this.quizid)
-
-        //     const response =
-        //         fetch(`${quizquestions_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             console.log(response);
-        //             if (data.code === 404) {
-        //                 // no course found in db
-        //                 this.searchError = data.message;
-        //             } else {
-        //                 this.quizquestions = data.data;
-        //                 console.log(this.quizquestions);
-
-        //                 var marks = 0;
-        //                 var form = document.getElementById(this.quizid);
-        //                 //for each question
-        //                 qnNum;
-        //                 for (qnNum = 0; qnNum < quizquestions.length; qnNum++) {
-        //                     qn = form[question.questiontext],
-        //                     ansNum;
-        //                     //check which option is selected
-        //                     for (ansNum = 0; ansNum < qn.length; ansNum++) {
-        //                         if (qn[ansNum].checked) {
-        //                             // get selected option.value
-        //                             var option= parse(qn[ansNum].value);
-        //                         }
-        //                     }
-        //                     // get correct answer
-        //                     this.answertext = localStorage.getItem("answertext")
-        //                     // mark selected option with feedback
-        //                     if(option==this.anwertext){ 
-        //                         marks += 1;
-        //                         document.writeln("Your answer is correct!"); 
-        //                     }
-        //                     else{
-        //                         document.writeln("The correct answer is '" + this.answertext + "'.");
-        //                     }
-        //                 }
-        //                 // if (marks/this.quizquestions.count > 0.85) {
-        //                 //     document.writeln("Your total marks is" + marks); 
-        //                 // }
-
-        //             }
-        //         })
-        //         .catch(error => {
-        //             // Errors when calling the service; such as network error, service offline, etc
-        //             console.log(this.searchError + error);
-        //         });
-        // },
-
         // startTimer: function (){
         //     this.course_code = 1008;
         //     this.class_section = "G1";
@@ -273,6 +224,7 @@ var app = new Vue({
         //         console.log(this.searchError + error);
         //     });
 
+
         // },
         // start: function() {
         //     document.getElementById("count").style="color:blue;";
@@ -301,11 +253,9 @@ var app = new Vue({
         pageRefresh: function () {
             // this.getAllCourses();
             // this.getMaterials();
-            this.getQuizzes();
-            this.getQuizForm();
+            // this.getQuizzes();
+            // this.getQuizForm();
             this.getQuizQuestions();
-            this.getQuizInfo();
-
             // this.getMarks();
             this.searchError = "";
             this.searchStr = "";
@@ -315,9 +265,10 @@ var app = new Vue({
         // on Vue instance created, load the course list
         // this.getAllCourses();
         // this.getMaterials();
-        this.getQuizzes();
-        this.getQuizForm();
+        // this.getQuizzes();
+        // this.getQuizForm();
         this.getQuizQuestions();
-        this.getQuizInfo();
+        // this.getQuizInfo();
     }
+
 });
