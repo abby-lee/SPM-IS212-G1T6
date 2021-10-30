@@ -91,16 +91,16 @@
 					<tr>
 						<td class="form-group">
 							<label for="description" class="cta-text">Description</label><span class="text-danger"> *Required</span>
-							<input required name="description" v-model="newDescription" type="text" class="form-control" id="description"
-								placeholder="Enter description">
+							<textarea rows="5" cols="50" required name="description" v-model="newDescription" type="text" class="form-control" id="description"
+								placeholder="Enter description"> </textarea>
 						</td>
 					</tr>
 
 					<tr>
 						<td class="form-group">
 							<label for="prerequisites" class="cta-text">Prerequisites</label>
-							<input v-model="newPrerequisites" type="text" class="form-control" id="prerequisites" 
-								placeholder="Prerequisites">
+							<textarea rows="5" cols="50"  v-model="newPrerequisites" type="text" class="form-control" id="prerequisites" 
+								placeholder="Prerequisites"> </textarea>
 						</td>
 					</tr>
 				</thead>
@@ -146,12 +146,12 @@
 
     <div class="section_our_solution">
     <div class="row">
-        <div  v-for="course in courses" >
-        <div class="our_solution_category" >
+        <div  v-for="course in courses" class="col-sm-12 col-md-6 col-lg-4">
+            <div class="our_solution_category">
             <div class="solution_cards_box">
             <div class="solution_card"  >
                 <div class="hover_color_bubble"></div>
-                <div class="so_top_icon">
+                <div class="so_top_icon" >
                 <svg id="Layer_1" enable-background="new 0 0 512 512" height="50" viewBox="0 0 512 512" width="40" xmlns="http://www.w3.org/2000/svg">
                     <g>
                     <g>
@@ -198,29 +198,28 @@
                 </div>
 
                 <div class="solu_title">
-                	<h4>{{course.course_title}}</h4>
+                	<h5 style="text-align:center">{{course.course_title}}</h5>
                 </div>
 
                 <div class="solu_code">
-                	<h6> Course Code: {{course.course_code}}</h6>
+                	<h6 style="text-align:center"> Course Code: {{course.course_code}}</h6>
                 </div>
 
-                <div class="solu_description">
-					<p>
+                <div class="solu_description" style="text-align:center">
+					<p style="text-align:center">
 						{{course.description}}
 					</p>
-                	<a target="_blank" href="courseProfile.html"><button @click= "courseProfile(course.course_title)" type="button" class="read_more_btn">Read More</button></a>
-                    <button @click= "editCourseForm(course)" type="button" class="btn btn-light" data-toggle="modal" data-target="#editCourseModal">
-                        Update Course
+                	<a target="_blank" href="courseProfile.html"><button @click= "courseProfile(course.course_title)" type="button" class="read_more_btn">View </button></a>
+                    <button @click= "editCourseForm(course)" type="button" style="color: white; background-color:#f0ad4e; overflow-wrap: break-word" data-toggle="modal" data-target="#editCourseModal">
+                        Update
                     </button>
-                    <button @click= "del(course.course_code)" type="button" class="btn btn-danger">Delete Course</button>
+                    <button @click= "del(course.course_code)" type="button" style="color: white; background-color:red; word-wrap: break-word">Delete</button>
                     <!-- currently ends up at the bottom need to figure out how to get it to open in the center like a modal -->
                     
                 </div>
 
-                
-            </div>
-            </div>
+                </div>
+                </div>
 
         </div>
         </div>
@@ -303,14 +302,14 @@
                     <tr>
                         <td class="form-group">
                             <label for="description" class="cta-text">Description</label>
-                            <input required name="description" v-model="editCurrentCourse.description" type="text" class="form-control" id="editDescription"> 
+                            <textarea rows="5" cols="50"  required name="description" v-model="editCurrentCourse.description" type="text" class="form-control" id="editDescription"> </textarea>
                         </td>
                     </tr>
 
                     <tr>
                         <td class="form-group">
                             <label for="prerequisites" class="cta-text">Prerequisites</label>
-                            <input v-model="editCurrentCourse.prerequisites" type="text" class="form-control" id="editPrerequisites" >  
+                            <textarea rows="5" cols="50" v-model="editCurrentCourse.prerequisites" type="text" class="form-control" id="editPrerequisites" >  </textarea>
                         </td>
                     </tr>
                 </thead>

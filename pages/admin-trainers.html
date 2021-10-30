@@ -60,7 +60,7 @@
 
 		<div class="section_our_solution">
 		<div class="row">
-			<div  v-for="trainer in trainers">
+			<div  v-for="trainer in trainers" class="col-sm-12 col-md-6 col-lg-4">
 			<div class="our_solution_category" >
 				<div class="solution_cards_box">
 				<div class="solution_card"  >
@@ -112,14 +112,14 @@
 					</div>
 
 					<div class="solu_title">
-						<h4>{{trainer.trainers_name}}</h4>
+						<h4 style="text-align:center">{{trainer.trainers_name}}</h4>
 					</div>
 
 					<div class="solu_code">
-						<h6> Trainer ID: {{trainer.trainers_eid}}</h6>
+						<h6 style="text-align:center"> Trainer ID: {{trainer.trainers_eid}}</h6>
 					</div>
 
-					<div class="solu_description">
+					<div class="solu_description" style="text-align:center">
 						<a target="_blank" href="trainerProfile.html"><button @click= "trainerProfile(trainer.trainers_name)" type="button" class="read_more_btn">View</button></a>
 					</div>
 

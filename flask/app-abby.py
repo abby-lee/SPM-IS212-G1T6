@@ -155,6 +155,41 @@ def courses():
         }
     ), 200
 
+#get eligible courses
+@app.route("/<int:learners_eid>/courses")
+def eligible_courses(learners_eid):
+    eligible_courses = []
+    course_list = Courses.query.all()
+    if course_list:
+        for course in course_list:
+            prerequisites = request.args.get('prerequisites', course.prerequisites)   
+            if prerequisites == "":
+                eligible_courses.append(course.to_dict())
+            else:
+                learner = Learners.query.filter_by(learners_eid=learners_eid).first()
+                if learner:
+                    completed_courses = request.args.get('courses_completed', learner.courses_completed)        
+                    if completed_courses == prerequisites:
+                        eligible_courses.append(course.to_dict())
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "learner_eid": learners_eid,
+                    "eligible_courses": eligible_courses
+                }
+            }
+        )
+    return jsonify (
+        {
+            "code": 404,
+            "data": {
+                "learner_eid": learners_eid
+            },
+            "message": "No eligible courses."
+        }
+    )
+
 #search course by course code
 @app.route("/courses/search/<int:course_code>")
 def find_by_course_code(course_code):
@@ -288,6 +323,16 @@ def deleteCourse(course_code):
         }
     ), 404
 
+#get all section by course
+@app.route("/sections/<int:course_code>")
+def get_sections(course_code):
+    section_list = Sections.query.filter_by(course_code=course_code).all()
+    return jsonify(
+        {
+            "data": [sections.to_dict()
+                     for sections in section_list]
+        }
+    ), 200
 
 #get all learners
 @app.route("/learners")
@@ -457,16 +502,16 @@ def find_by_trainerEid(trainers_eid):
         }
     ), 404
 
-#get all sections
-@app.route("/sections")
-def get_sections():
-    section_list = Sections.query.all()
-    return jsonify(
-        {
-            "data": [sections.to_dict()
-                     for sections in section_list]
-        }
-    ), 200
+# #get all sections
+# @app.route("/sections")
+# def get_sections():
+#     section_list = Sections.query.all()
+#     return jsonify(
+#         {
+#             "data": [sections.to_dict()
+#                      for sections in section_list]
+#         }
+#     ), 200
 
 #assign trainer a to section of a course -> update to section
 @app.route("/sections/<string:class_section>/<int:course_code>", methods=['PUT'])

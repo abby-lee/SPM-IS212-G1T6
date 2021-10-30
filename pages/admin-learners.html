@@ -68,7 +68,7 @@
 
     <div class="section_our_solution">
     <div class="row">
-        <div v-for="learner in learners" class="col-sm-4">
+        <div v-for="learner in learners" class="col-sm-12 col-md-6 col-lg-4">
         <div class="our_solution_category" >
             <div class="solution_cards_box">
             <div class="solution_card"  >
@@ -120,15 +120,15 @@
                 </div>
 
                 <div class="solu_name">
-                	<h4>{{learner.learners_name}}</h4>
+                	<h4 style="text-align:center">{{learner.learners_name}}</h4>
                 </div>
 
                 <div class="solu_id">
-                	<h6> Learner ID: {{ learner.learners_eid }} </h6>
+                	<h6 style="text-align:center"> Learner ID: {{ learner.learners_eid }} </h6>
                 </div>
 
-                <div class="solu_description">
-                	<a target="_blank" href="learnerProfile.html"><button @click= "learnerProfile(learner.learners_name)" type="button" class="read_more_btn">View</button></a>
+                <div class="solu_description" style="text-align:center">
+                	<a  target="_blank" href="learnerProfile.html"><button @click= "learnerProfile(learner.learners_name)" type="button" class="read_more_btn">View</button></a>
                 </div>
 
             </div>
