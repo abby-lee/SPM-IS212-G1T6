@@ -37,7 +37,7 @@ var app = new Vue({
 
         "quizzes": [],
 
-        selected: "",
+        selected: ""
     },
     methods: {
         
@@ -55,9 +55,11 @@ var app = new Vue({
                     console.log(response);
                     if (data.code === 404) {
                         this.message = data.message;
+                        console.log(this.message);
                     } else {
-                        this.eligibleCourses = data.data.eligible_courses;
-                        console.log(this.eligible_courses);
+                        console.log(data.data);
+                        this.eligibleCourses = data.data;
+                        console.log(this.eligibleCourses);
                     }
                 })
                 .catch(error => {
@@ -75,9 +77,11 @@ var app = new Vue({
                     console.log(response);
                     if (data.code === 404) {
                         this.message = data.message;
+                        console.log(this.message);
                     } else {
-                        this.completedCourses = data.data.courses_completed;
-                        console.log(this.courses_completed);
+                        console.log(data.data);
+                        this.completedCourses = data.data;
+                        console.log(this.completedCourses);
                     }
                 })
                 .catch(error => {
@@ -169,59 +173,59 @@ var app = new Vue({
                     console.log(this.searchError + error);
                 });
         },
-        getQuizzes: function () { 
-            this.courseCode = 1003;
-            this.classSection = "G2"
+        // getQuizzes: function () { 
+        //     this.courseCode = 1003;
+        //     this.classSection = "G2"
 
-            console.log(this.courseCode)
+        //     console.log(this.courseCode)
 
-            const response =
-                fetch(`${quiz_url}/${this.classSection}/${this.courseCode}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no course found in db
-                        this.searchError = data.message;
-                    } else {
-                        this.quizzes = data.data;
-                        console.log(this.quizzes);
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    console.log(this.searchError + error);
-                });
-            },
-        getQuizQuestions: function() { 
-            // this.course_code = 1008;
-            // this.class_section = "G1";
-            // this.quizid = 3
-            this.course_code = localStorage.getItem("course_code");
-            this.class_section = localStorage.getItem("class_section");
-            this.quizid = localStorage.getItem("quizid");
+        //     const response =
+        //         fetch(`${quiz_url}/${this.classSection}/${this.courseCode}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             console.log(response);
+        //             if (data.code === 404) {
+        //                 // no course found in db
+        //                 this.searchError = data.message;
+        //             } else {
+        //                 this.quizzes = data.data;
+        //                 console.log(this.quizzes);
+        //             }
+        //         })
+        //         .catch(error => {
+        //             // Errors when calling the service; such as network error, 
+        //             // service offline, etc
+        //             console.log(this.searchError + error);
+        //         });
+        //     },
+        // getQuizQuestions: function() { 
+        //     // this.course_code = 1008;
+        //     // this.class_section = "G1";
+        //     // this.quizid = 3
+        //     this.course_code = localStorage.getItem("course_code");
+        //     this.class_section = localStorage.getItem("class_section");
+        //     this.quizid = localStorage.getItem("quizid");
 
-            console.log(this.class_section)
+        //     console.log(this.class_section)
 
-            const response =
-                fetch(`${quizzes_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no course found in db
-                        this.searchError = data.message;
-                    } else {
-                        this.quizquestions = data.data;
-                        console.log(this.quizquestions);
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, service offline, etc
-                    console.log(this.searchError + error);
-                });
-        },   
+        //     const response =
+        //         fetch(`${quiz_url}/${this.class_section}/${this.course_code}/${this.quizid}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             console.log(response);
+        //             if (data.code === 404) {
+        //                 // no course found in db
+        //                 this.searchError = data.message;
+        //             } else {
+        //                 this.quizquestions = data.data;
+        //                 console.log(this.quizquestions);
+        //             }
+        //         })
+        //         .catch(error => {
+        //             // Errors when calling the service; such as network error, service offline, etc
+        //             console.log(this.searchError + error);
+        //         });
+        // },   
         storeQuizForm: function(quizid) {
             localStorage.quizid = quizid
         },
@@ -237,15 +241,15 @@ var app = new Vue({
             console.log(localStorage.getItem("course_code"));
             return localStorage.getItem("course_code")
         },
-        storeQuizInfo: function (message) {
-            // sessionStorage.course_code= ;
-            console.log(message);
-            localStorage.quizid = message;
-        },
-        getQuizInfo: function(){
-            console.log(localStorage.getItem("quizid"));
-            return localStorage.getItem("quizid")
-        },
+        // storeQuizInfo: function (message) {
+        //     // sessionStorage.course_code= ;
+        //     console.log(message);
+        //     localStorage.quizid = message;
+        // },
+        // getQuizInfo: function(){
+        //     console.log(localStorage.getItem("quizid"));
+        //     return localStorage.getItem("quizid")
+        // },
         pageRefresh: function () {
             this.getEligibleCourses();
             this.getCompletedCourses();
@@ -259,8 +263,8 @@ var app = new Vue({
         this.getAllCourses();
         this.getEligibleCourses();
         this.getCompletedCourses();
-        this.getQuizQuestions();
-        this.getQuizForm();
+        // this.getQuizQuestions();
+        // this.getQuizForm();
         this.selected;
         // this.getMaterials();
         // this.getQuizzes();
