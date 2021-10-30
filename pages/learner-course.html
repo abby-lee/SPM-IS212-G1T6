@@ -31,9 +31,9 @@
       <div class="container px-lg-5">
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item"><a class="nav-link" v-model="eligibleCourses" @click="getEligibleCourses()" href="" active>All Courses</a></li>
+                  <li class="nav-item"><a class="nav-link" @click="getEligibleCourses()" href="">All Courses</a></li>
                   <li class="nav-item"><a class="nav-link" href="">In-progress</a></li>
-                  <li class="nav-item"><a class="nav-link" v-model="completedCourses" @click="getCompletedCourses()" href="">Completed</a></li>
+                  <li class="nav-item"><a class="nav-link" @click="getCompletedCourses()" href="">Completed</a></li>
               </ul>
           </div>
       </div>
@@ -48,8 +48,8 @@
     <!-- <div> <button @click="testgetinfo"> test get info button</button> </div> -->
     <div class="container">
       <div class="row text-center">
-        <div v-if="selected=completedCourses">
-          <div v-for="course in completedCourses"  class="solution_card col-sm-3" style="margin:10px; width: 15rem;background-color: lavender;">
+        <!-- <div v-if="selected=='All'"> -->
+          <div v-for="course in eligibleCourses"  class="solution_card col-sm-3" style="margin:10px; width: 15rem;background-color: lavender;">
             <!-- <img src="{{ courseImg }}" class="card-img-center"> -->
             <div class="card-body">
               <div class="hover_color_bubble"></div>
@@ -100,22 +100,22 @@
               </div>
               <h3 class="card-text"> {{ course.course_title }} </h3>
               <p class="card-text"> Course ID: {{ course.course_code }} </p> 
-              <a class="btn btn-primary" @click="storeCourseInfo(course.course_code)" href="trainer-section.html" role="button">Read More<a>
+              <a class="btn btn-primary" @click="storeCourseInfo(course.course_code)" href="learner-enrol.html" role="button">Read More<a>
               </div>
           </div>
-        </div>
+        <!-- </div> -->
       </div>
     </div>
 
     </section>
   </div>
 
-  <!-- <div class="container">
+  <div class="container">
     <div class="row text-center">
-      <div v-if="selected=completedCourses">
-        <div v-for="course in completedCourses" class="solution_card col-sm-3" style="margin:10px; width: 15rem;background-color: lavender;"> --> 
+      <!-- <div v-if="selected=='Completed"> -->
+        <div v-for="course in completedCourses" class="solution_card col-sm-3" style="margin:10px; width: 15rem;background-color: lavender;">  
           <!-- <img src="{{ courseImg }}" class="card-img-center"> -->
-          <!-- <div class="card-body">
+          <div class="card-body">
             <div class="hover_color_bubble"></div>
             <div class="so_top_icon">
               <svg id="Layer_1" enable-background="new 0 0 512 512" height="50" viewBox="0 0 512 512" width="40" xmlns="http://www.w3.org/2000/svg">
@@ -167,11 +167,11 @@
             <a class="btn btn-primary" @click="storeCourseInfo(course.course_code)" href="trainer-section.html" role="button">Read More<a>
             </div>
         </div>
-      </div>
+      <!-- </div> -->
     </div>
-  </div> -->
+  </div>
 
-  <!-- </section>
+  </section>
 </div>
     
 
