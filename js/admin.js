@@ -1,14 +1,18 @@
 var get_all_URL = "http://localhost:5000/courses";
 var get_all_trainers = "http://localhost:5000/trainers";
 var get_all_learners = "http://localhost:5000/learners";
+var section_url = "http://localhost:5000/sections";
 
 var app = new Vue({
     el: "#app",
     // computed: {
-    // prereqPlaceholder: function () {
-    //     return `${this.editPrerequisites}`
-    //   }
+    
     // },
+    mounted:function(){
+        this.getCourseinfo(); //method1 will execute at pageload
+        // this.getCourseSection();
+        this.getLearnerInfo();
+    },
     data: {
         searchStr: "",
         message: "There is a problem retrieving data, please try again later.",
@@ -19,6 +23,7 @@ var app = new Vue({
         "courses": [],
         "trainers": [],
         "learners": [],
+        "eligibleCourses": [],
         searchError: "",
 
         newCourseTitle: "",
@@ -120,21 +125,109 @@ var app = new Vue({
                             // no course found in db
                             this.searchError = data.message;
                         } else {
-
-                            this.courses = data.data;
-                            console.log(this.courses);
-
+                            this.course = data.data;
+                            console.log(this.course);
+                            localStorage.clickedCourse = JSON.stringify(this.course);
+                            console.log(localStorage.getItem("clickedCourse")); 
                         }
                     })
                     .catch(error => {
                         // Errors when calling the service; such as network error, 
                         // service offline, etc
-                        searchError = 'Unable to retrieve course';
                         console.log(this.searchError + error);
                     });
-                
+                       
         },
-        
+       
+        getCourseinfo: function(){
+            clickedCourse = JSON.parse(localStorage.getItem("clickedCourse"));
+            console.log(clickedCourse);
+
+            const response =
+                fetch(`${section_url}/${clickedCourse[0].course_code}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // course has no section
+                        this.message = data.message;
+                    } else {
+                        this.sections = data.data;
+                        console.log(this.sections);
+                        localStorage.sections = JSON.stringify(this.sections);
+                        console.log(localStorage.getItem("sections")); 
+                        courseSections = JSON.parse(localStorage.getItem("sections"));
+                        console.log(courseSections);
+                        console.log(courseSections.length);
+                        if (courseSections.length == 0) {
+                            document.getElementById("courseDetails").innerHTML = 
+                            `
+                            <H1> ${clickedCourse[0].course_title} </H1>
+                            <h2> Course Code: ${clickedCourse[0].course_code} </h2>
+                            <h3> Course Description: ${clickedCourse[0].description} </h3>
+                            `;
+                        } else {
+                            document.getElementById("courseDetails").innerHTML = 
+                            `
+                            <H1> ${clickedCourse[0].course_title} </H1>
+                            <h2> Course Code: ${clickedCourse[0].course_code} </h2>
+                            <h3> Course Description: ${clickedCourse[0].description} </h3>
+                            `;
+                            for (let i = 0; i < courseSections.length; i++) {
+                                const response =
+                                    fetch(`${get_all_trainers}/eid/${courseSections[i].trainers_eid}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(response);
+                                        if (data.code === 404) {
+                                            // no trainer found in db
+                                            this.searchError = data.message;
+                                        } 
+                                        else {
+                                            this.trainer = data.data;
+                                            console.log(this.trainer);
+                                            console.log(this.trainer[0].trainers_name);
+                                            
+                                            document.getElementById("section").innerHTML = 
+                                            `
+                                            <h4> Sections: </h4>
+                                            <ul> 
+                                                <li> <a target="_blank" href="courseSection.html" @click="storeCourseSection(courseSections[i].class_section);"> ${courseSections[i].class_section} </a>, Section Trainer: ${this.trainer[0].trainers_name} </li>
+                                            </ul>
+                                            `;
+                                             
+                                        }    
+                                    })
+                                    // 
+                                    .catch(error => {
+                                        // Errors when calling the service; such as network error, 
+                                        // service offline, etc
+                                        console.log(this.searchError + error);
+                                    });
+                            } 
+                        }
+                    }
+                })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.message + error);
+
+                    });
+
+            
+           
+        },
+        storeCourseSection: function (sectionInfo) {
+            console.log(sectionInfo);
+            localstorage.clickedSection = sectionInfo;
+        },
+        getCourseSection: function(){
+            console.log(localStorage.getItem("clickedSection"));
+            sectionData = localStorage.getItem("clickedSection");
+            document.getElementById("sectionNumber").innerHTML = `${sectionData}`;
+            // document.getElementById("trainer").innerHTML = `${sectionData[sectionTrainer]}`;
+        },
         addCourse: function () {
             // reset data to original setting
             this.courseAdded = false;
@@ -455,18 +548,19 @@ var app = new Vue({
             this.searchError = "";
             this.learners_name = learners_name;
             console.log(learners_name);
-
             const response =
                     fetch(`${get_all_learners}/${this.learners_name}`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
                         if (data.code === 404) {
-                            // no trainer found in db
+                            // no learner found in db
                             this.searchError = data.message;
                         } else {
                             this.learners = data.data;
                             console.log(this.learners);
+                            localStorage.learner = JSON.stringify(this.learners);
+                            console.log(localStorage.getItem("learner"));
                         }
                     })
                     .catch(error => {
@@ -474,23 +568,69 @@ var app = new Vue({
                         // service offline, etc
                         console.log(this.searchError + error);
                     });
-                
+        },
+
+        getLearnerInfo: function() {
+            learnerInfo = JSON.parse(localStorage.getItem("learner"));
+            console.log(learnerInfo);
+            document.getElementById("learnerInfo").innerHTML =
+            `<h1> ${learnerInfo[0].learners_name}</h1>
+            <h3> Learner ID: ${learnerInfo[0].learners_eid} </h3>
+            <h3> Learner's Email: ${learnerInfo[0].learners_email} </h3>
+            <h3> Courses Completed: ${learnerInfo[0].courses_completed} </h3>
+            <h3> Qualifications: ${learnerInfo[0].learners_qualifications} </h3>
+            <button type="button" class="btn btn-primary" @click="getEligibleCourses(learnerInfo[0].learners_eid)" data-toggle="modal" data-target="#exampleModalCenter">
+            Assign Courses
+            </button>
+            `;        
+        },
+         
+        //get eligible courses for learner
+        getEligibleCourses: function (learners_eid) {
+        learnerInfo = JSON.parse(localStorage.getItem("learner")); 
+        console.log(learnerInfo);
+        learners_eid = learnerInfo[0].learners_eid;
+            const response =
+                    fetch(`http://localhost:5000/${learners_eid}/courses`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no eligible courses
+                            this.searchError = data.message;
+                        } else {
+                            this.eligibleCourses = data.data;
+                            console.log(this.eligibleCourses);
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.searchError + error);
+                    });
+
         },
         pageRefresh: function () {
             this.getAllCourses();
             this.getAllTrainers();
             this.getAllLearners();
+            this.getCourseinfo();
+            
+            // this.getCourseSection();
+            //this.getLearnerInfo();
+            this.getEligibleCourses();
             this.searchError = "";
             this.searchStr = "";
         },
-        storeCourseInfo: function () {
-            pass
-        }
+    
     },
     created: function () {
         // on Vue instance created, load the course list
         this.getAllCourses();
         this.getAllTrainers();
         this.getAllLearners();
+        //this.getSection();
+        // this.getCourseinfo();
+        //this.getLearnerInfo();
     }
 });
