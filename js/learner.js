@@ -224,7 +224,6 @@ var app = new Vue({
         //                 // if (marks/this.quizquestions.count > 0.85) {
         //                 //     document.writeln("Your total marks is" + marks); 
         //                 // }
-
         //             }
         //         })
         //         .catch(error => {
@@ -232,6 +231,10 @@ var app = new Vue({
         //             console.log(this.searchError + error);
         //         });
         // },
+
+
+
+
 
         // startTimer: function (){
         //     this.course_code = 1008;
