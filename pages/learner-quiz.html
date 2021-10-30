@@ -29,7 +29,7 @@
     </nav>
     <!-- <div v-for="quiz in quizzes"> -->
       <!-- <h1>Quiz {{ get_questions() }}</h1> -->
-      <h1>Quiz {{ quiz.quizid }}</h1>
+      <h1>Quiz {{ getQuizQuestions() }}</h1>
       <form methods="POST" actions="/" id="quizquestions.quizid">
         <!-- each question -->
         <div v-for="question in quizquestions">
