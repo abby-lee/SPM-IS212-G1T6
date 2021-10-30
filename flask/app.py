@@ -4,10 +4,10 @@ from flask_cors import CORS, cross_origin
 from sqlalchemy.exc import SQLAlchemyError
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/lms_database'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/lms_database'
 #Mac config
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root' + \
-#                                         '@localhost:8889/lms_database'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root' + \
+                                        '@localhost:8889/lms_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
                                            'pool_recycle': 280}
@@ -219,7 +219,7 @@ def courses():
     ), 200
 
 #get eligible courses
-@app.route("/<int:learners_eid>/courses")
+@app.route("/courses/<int:learners_eid>/eligible")
 def eligible_courses(learners_eid):
     eligible_courses = []
     course_list = Courses.query.all()
@@ -239,7 +239,7 @@ def eligible_courses(learners_eid):
                 "code": 200,
                 "data": {
                     "learner_eid": learners_eid,
-                    "courses_completed": eligible_courses
+                    "eligible_courses": eligible_courses
                 }
             }
         )
@@ -254,7 +254,7 @@ def eligible_courses(learners_eid):
     )
 
 #get learners completed courses 
-@app.route("/<int:learners_eid>/completed")
+@app.route("/courses/<int:learners_eid>/completed")
 def completed_courses(learners_eid):
     learner = Learners.query.filter_by(learners_eid=learners_eid).first()
     if learner:
@@ -372,7 +372,7 @@ def add_learner():
         return jsonify({
             "message": "Incorrect JSON object provided."
         }), 500
-    learner = Progress(**data)
+    learner = Enrols(**data)
     print(learner)
     try:
         db.session.add(learner)
@@ -390,7 +390,7 @@ def add_learner():
 # remove learner from course
 @app.route("/enrols/<int:course_code>/<string:learners_eid>", methods=['DELETE'])
 def delete_book(course_code, learners_eid):
-    learnertoremove = Progress.query.filter_by(course_code=course_code , learners_eid=learners_eid).first()
+    learnertoremove = Enrols.query.filter_by(course_code=course_code , learners_eid=learners_eid).first()
     if learnertoremove:
         db.session.delete(learnertoremove)
         db.session.commit()
@@ -535,7 +535,12 @@ def get_quizzes(class_section, course_code):
     ), 200
 
 #get quiz questions
+<<<<<<< HEAD
+<<<<<<<< HEAD:flask/app.py
 @app.route("/quizquestions/<string:class_section>/<int:course_code>/<int:quizid>")
+========
+@app.route("/quizzes/<string:class_section>/<int:course_code>/<int:quizid>")
+>>>>>>>> main:flask/app-combine.py
 def get_questions(class_section, course_code, quizid):
     quizquestions = Quizquestions.query.filter_by(class_section=class_section, course_code=course_code, quizid=quizid).all()
     return jsonify(
@@ -543,6 +548,15 @@ def get_questions(class_section, course_code, quizid):
             "code": 200,
             "data": [question.to_dict()
                      for question in quizquestions]
+
+@app.route("/quizzes/<string:class_section>/<int:course_code>/<int:quizid>")
+def get_questions(class_section, course_code, quizid):
+    question_list = Quizquestions.query.filter_by(class_section=class_section, course_code=course_code, quizid=quizid).all()
+    return jsonify(
+        {
+            "data": [question.to_dict()
+                     for question in question_list]
+>>>>>>> main
         }
     ), 200
 

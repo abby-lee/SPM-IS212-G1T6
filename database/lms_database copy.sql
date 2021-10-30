@@ -183,7 +183,7 @@ INSERT INTO `learners` (`learners_eid`, `learners_name`, `learners_email`, `lear
 (7, 'Jacob Tok', 'Jacob.Tok@gmail.com', "Bachelor's Degree in Computer Engineering",'Foundations of Printer Repairs'),
 (8, 'Yong Hao Koh', 'Yong Hao.Koh@gmail.com', "Bachelor's Degree in Electrical Engineering with a Minor in Field Studies",''),
 (9, 'Jones Low', 'Jones.Low@gmail.com',  "Bachelor's Degree in Electrical Engineering", 'Foundations of how Copiers work'),	
-(10, 'Linda Teng', 'Linda.Teng@gmail.com', "Bachelor's Degree in Engineering Technology",'');
+(10, 'Linda	Teng', 'Linda.Teng@gmail.com', "Bachelor's Degree in Engineering Technology",'');
 
 -- --------------------------------------------------------
 
@@ -226,11 +226,6 @@ CREATE TABLE IF NOT EXISTS `quizzes` (
   CONSTRAINT `quizzes_ibfk_2` FOREIGN KEY (`class_section`) REFERENCES `sections` (`class_section`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-INSERT INTO `quizzes` (`quizid`, `course_code`, `class_section`, `time`, `graded`) VALUES
-(1, 1008, 'G1', '15', ''),
-(2, 1008, 'G1', '15', ''),
-(3, 1008, 'G1', '60', 'B');
-
 -- --------------------------------------------------------
 
 --
@@ -254,6 +249,11 @@ CREATE TABLE IF NOT EXISTS `quizquestions` (
   CONSTRAINT `quizquestions_ibfk_3` FOREIGN KEY (`quizid`) REFERENCES `quizzes` (`quizid`)
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+INSERT INTO quizquestions (questionid, course_code, class_section, quizid, questiontext, questiontype, questionoptions, answertext) VALUES
+(1, 1008, 'G1', '3', '10 + 10 = 40', 'TF', 'True,False', 'False'),
+(2, 1008, 'G1', '3', '3 x 4 = ?', 'mcq', '4,8,6,12', '12'),
+(3, 1008, 'G1', '3', '10 - 3 = ?', 'mcq', '10,3,7,0', '7');
 
 -- --------------------------------------------------------
 

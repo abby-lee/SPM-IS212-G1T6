@@ -28,22 +28,20 @@
         </div>
     </nav>
     <!-- <div v-for="quiz in quizzes"> -->
-      <!-- <h1>Quiz {{ get_questions() }}</h1> -->
-      <h1>Quiz {{ getQuizQuestions() }}</h1>
-      <form methods="POST" actions="/" id="quizquestions.quizid">
+    <h1>Quiz {{ getQuizQuestions() }}</h1>
+      <!-- <h1>Quiz {{ quiz.quizid }}</h1> -->
+      <form methods="POST" actions="/">
         <!-- each question -->
         <div v-for="question in quizquestions">
           <h3>{{ question.questiontext }}</h3>
-          <div v-for="question in quizquestions">
-            <!-- options -->
-            <div v-for="option in (question.questionoptions.split(','))" >
-              <!-- same name, diff value and id -->
-              <input type="radio" value="option" name="question.questiontext"> {{option}} </input>
-            </div>
-          </div>
-        </div>
+          <div v-for="question in quizquestions"></div>
+          <!-- options -->
+          <div v-for="option in (question.questionoptions.split(','))" >
+            <input type="radio" id="option" name="question.questiontext"> {{option}}
+        </div><br>
+       </div><br>
         <!-- submit button -->
-        <button class="btn btn-outline-primary" type="submit" @click="checkAnswers()">Submit</button>      
+        <button class="btn btn-outline-primary" type="submit" @click="storeQuizForm(quiz.quizid)">Submit</button>
       </form>
     </div>
   </div>

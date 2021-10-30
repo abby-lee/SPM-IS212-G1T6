@@ -206,7 +206,7 @@ class Materials(db.Model):
 db.create_all()
 
 #get eligible courses
-@app.route("/<int:learners_eid>/courses")
+@app.route("/<int:learners_eid>")
 def eligible_courses(learners_eid):
     eligible_courses = []
     course_list = Courses.query.all()

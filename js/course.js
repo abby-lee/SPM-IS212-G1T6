@@ -34,6 +34,8 @@ var app = new Vue({
         time:0,
         graded:"",
 
+        picked: ""
+
     },
     methods: {
         getMaterials: function () { 
