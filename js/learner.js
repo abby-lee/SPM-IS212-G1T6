@@ -58,7 +58,7 @@ var app = new Vue({
                         console.log(this.message);
                     } else {
                         console.log(data.data);
-                        this.eligibleCourses = data.data;
+                        this.eligibleCourses = data.data.eligible_courses;
                         console.log(this.eligibleCourses);
                     }
                 })
@@ -80,7 +80,7 @@ var app = new Vue({
                         console.log(this.message);
                     } else {
                         console.log(data.data);
-                        this.completedCourses = data.data;
+                        this.completedCourses = data.data.courses_completed;
                         console.log(this.completedCourses);
                     }
                 })
@@ -251,8 +251,8 @@ var app = new Vue({
         //     return localStorage.getItem("quizid")
         // },
         pageRefresh: function () {
-            this.getEligibleCourses();
-            this.getCompletedCourses();
+            // this.getEligibleCourses();
+            // this.getCompletedCourses();
             this.getQuizQuestions();
             this.searchError = "";
             this.searchStr = "";
