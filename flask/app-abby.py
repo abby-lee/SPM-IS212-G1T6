@@ -208,6 +208,7 @@ def find_by_course_code(course_code):
         }
     ), 404
 
+
 #search course by course title
 @app.route("/courses/searchTitle/<string:course_title>")
 def find_by_course_title(course_title):

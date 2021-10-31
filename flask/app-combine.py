@@ -276,6 +276,24 @@ def completed_courses(learners_eid):
             }
         )
 
+#get course by course title
+# @app.route("/courses/searchTitle/<string:course_title>")
+# def find_by_course_title(course_title):
+#     coursebyTitle = Courses.query.filter_by(course_title=course_title).first()
+#     if coursebyTitle:
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": [coursebyTitle.to_dict()]
+#             }
+#         ), 200
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "message": "Course title not found."
+#         }
+#     ), 404
+
 #get course prerequisites 
 @app.route("/courses/<int:course_code>/prerequisites")
 def course_prerequisites(course_code):
