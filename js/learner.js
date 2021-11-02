@@ -2,9 +2,13 @@ var get_all_URL = "http://localhost:5000/courses";
 var materials_url = "http://localhost:5000/materials";
 var quiz_url = "http://localhost:5000/quizzes";
 
+
 var app = new Vue({
     // binds the new Vue object to the HTML element with id="app".
     el: "#app",
+    // computed: {
+
+    // },
     data: {
         searchStr: "",
         message: "There is a problem retrieving course data, please try again later.",
@@ -32,7 +36,8 @@ var app = new Vue({
 
         "eligibleCourses": [],
         "completedCoursesArr": [],
-
+        "completedCoursesObjectArr": [],
+        
         learners_eid: 0,        
 
         "quizzes": [],
@@ -51,7 +56,7 @@ var app = new Vue({
                         this.message = data.message;
                         console.log(this.message);
                     } else {
-                        console.log(data.data);
+                        console.log(data.data.eligible_courses);
                         this.eligibleCourses = data.data.eligible_courses;
                         console.log(this.eligibleCourses);
                     }
@@ -62,7 +67,7 @@ var app = new Vue({
         },
         
         getCompletedCourses: function() {
-            this.learners_eid = 1   
+            this.learners_eid = 1 
 
             const response = 
                 fetch(`${get_all_URL}/${this.learners_eid}/completed`)
@@ -73,21 +78,80 @@ var app = new Vue({
                         this.message = data.message;
                         console.log(this.message);
                     } else {
-                        console.log(data.data);
+                        console.log(data.data.courses_completed);
                         this.completedCourses = data.data.courses_completed;
                         if (this.completedCourses.includes(',')) {
-                            completedCoursesArr = this.completedCourses.split(',');
-                            console.log(completedCoursesArr);
+                            this.completedCoursesArr = this.completedCourses.split(', ');
+                            console.log(this.completedCoursesArr);
                             
                         } else {
+                            
                             this.completedCoursesArr = new Array(this.completedCourses); 
-                            console.log(this.completedCoursesArr);                        }
+                            console.log(this.completedCoursesArr);
+                        }
+                        for (var i = 0; i < this.completedCoursesArr.length; i++) {
+                
+                            console.log(this.completedCoursesArr[i]);
+                            const response =
+                                fetch(`${get_all_URL}/searchTitle/${this.completedCoursesArr[i]}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(response);
+                                    if (data.code === 404) {
+                                        // no course found in db
+                                        this.searchError = data.message;
+                                    } else {
+                                        this.course = data.data;
+                                        console.log(this.course);
+                                        
+                                        this.completedCoursesObjectArr.push(this.course[0]);
+                                        console.log(this.completedCoursesObjectArr);
+                                    }
+                                })
+                                .catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    console.log(this.searchError + error);
+                                });
+            
+                                
+                        }
                     }
                 })
                 .catch(error => {
                     console.log(this.message + error);
                 });
         },
+        // completedCoursesObjects: function () {
+        //     // this.completedCoursesObjectArr = [];
+        //     console.log(this.completedCoursesArr);
+        //     for (var i = 0; i < this.completedCoursesArr.length; i++) {
+                
+        //         console.log(this.completedCoursesArr[i]);
+        //         const response =
+        //             fetch(`${get_all_URL}/searchTitle/${this.completedCoursesArr[i]}`)
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 console.log(response);
+        //                 if (data.code === 404) {
+        //                     // no course found in db
+        //                     this.searchError = data.message;
+        //                 } else {
+        //                     this.course = data.data;
+        //                     console.log(this.course);
+        //                     this.completedCoursesObjectArr.push(this.course);
+        //                     console.log(this.completedCoursesObjectArr);
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 // Errors when calling the service; such as network error, 
+        //                 // service offline, etc
+        //                 console.log(this.searchError + error);
+        //             });
+
+                    
+        //     }
+        // },
         getAllCourses: function () {
             const response =
             //sends an HTTP GET request from Vue to the npm api to search for all courses
@@ -223,8 +287,9 @@ var app = new Vue({
         //     return localStorage.getItem("quizid")
         // },
         pageRefresh: function () {
-            // this.getEligibleCourses();
-            // this.getCompletedCourses();
+            this.getEligibleCourses();
+            this.getCompletedCourses();
+            // this.completedCoursesObjects();
             this.getQuizQuestions();
             this.searchError = "";
             this.searchStr = "";
@@ -235,6 +300,7 @@ var app = new Vue({
         this.getAllCourses();
         this.getEligibleCourses();
         this.getCompletedCourses();
+        // this.completedCoursesObjects();
         // this.getQuizQuestions();
         // this.getQuizForm();
         this.selected;
