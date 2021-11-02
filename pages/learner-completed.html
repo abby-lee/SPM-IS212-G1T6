@@ -42,7 +42,7 @@
     <div class="container">
       <div class="row text-center">
         <!-- <div v-if="selected=='Completed"> -->
-          <div v-for="course in completedCoursesArr" class="solution_card col-sm-3" style="margin:10px; width: 15rem;background-color: lavender;">  
+          <div v-for="course in completedCoursesObjectArr" class="solution_card col-sm-3" style="margin:10px; width: 15rem;background-color: lavender;">  
             <!-- <img src="{{ courseImg }}" class="card-img-center"> -->
             <div class="card-body">
               <div class="hover_color_bubble"></div>
@@ -91,7 +91,7 @@
                   </g>
               </svg>
               </div>
-              <h3 class="card-text"> {{ course }} </h3>
+              <h3 class="card-text"> {{ course.course_title }} </h3>
               <p class="card-text"> Course ID: {{ course.course_code }} </p> 
               <a class="btn btn-primary" @click="getMaterials()" href="learner-material.html" role="button">Read More<a>
               </div>
