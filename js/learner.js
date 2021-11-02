@@ -113,34 +113,6 @@ var app = new Vue({
                     console.log(this.message + error);
                 });
         },
-        findCourse: function () {   
-            const response =
-                fetch(`${get_all_URL}/${this.searchStr}`)
-                //then() deal with asynchronous tasks
-                // .json() returns json object of the result (message)
-                .then(response => response.json())
-                // print out message from response
-                .then(data => {
-                    console.log(response);
-                    // no course found in db
-                    if (data.code === 404) {
-                        //print error msg above
-                        this.searchError = data.message;
-                    } else {
-                        //get course list
-                        this.courses = data.data.courses;
-                        //check for empty string in courses?
-                        console.log(this.courses);
-                        this.searchError = "";
-                    }
-                })
-
-                // handle error - try,catch,error,finally
-                .catch(error => {
-                    // print out error message 
-                    console.log(this.searchError + error);
-                });
-        },
         getMaterials: function () { 
             this.courseCode = 1003;
             this.classSection = "G2"
