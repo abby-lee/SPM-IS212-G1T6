@@ -31,20 +31,14 @@ var app = new Vue({
         chapter_completed: 2,
 
         "eligibleCourses": [],
-        "completedCourses": [],
+        "completedCoursesArr": [],
 
         learners_eid: 0,        
 
         "quizzes": [],
-
-        selected: ""
     },
     methods: {
         
-        // getSelected: function() {
-        //     return this.selected
-        // },
-
         getEligibleCourses: function() {
             this.learners_eid = 1    
 
@@ -81,7 +75,13 @@ var app = new Vue({
                     } else {
                         console.log(data.data);
                         this.completedCourses = data.data.courses_completed;
-                        console.log(this.completedCourses);
+                        if (this.completedCourses.includes(',')) {
+                            completedCoursesArr = this.completedCourses.split(',');
+                            console.log(completedCoursesArr);
+                            
+                        } else {
+                            this.completedCoursesArr = new Array(this.completedCourses); 
+                            console.log(this.completedCoursesArr);                        }
                     }
                 })
                 .catch(error => {
